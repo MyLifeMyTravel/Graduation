@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AMap</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- 高德地图Key -->
+    <string name="amap_key">90d25cc796f5f57973d8af45eb0579ad</string>
+
+</resources>
