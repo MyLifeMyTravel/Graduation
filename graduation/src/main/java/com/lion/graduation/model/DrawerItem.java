@@ -6,12 +6,14 @@ package com.lion.graduation.model;
  */
 public class DrawerItem {
 
+    //需要显示Item的图标
     private int icon;
-    private String item = null;
+    //需要显示Item的文字说明
+    private String text = null;
 
-    public DrawerItem(int icon, String item) {
+    public DrawerItem(int icon, String text) {
         this.icon = icon;
-        this.item = item;
+        this.text = text;
     }
 
     public int getIcon() {
@@ -22,11 +24,11 @@ public class DrawerItem {
         this.icon = icon;
     }
 
-    public String getItem() {
-        return item;
+    public String getText() {
+        return text;
     }
 
-    public void setItem(String item) {
-        this.item = item;
+    public void setText(String text) {
+        this.text = text;
     }
 }
