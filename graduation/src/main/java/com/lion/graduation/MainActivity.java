@@ -8,30 +8,38 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.lion.graduation.model.DrawerItem;
+import com.lion.graduation.ui.adapter.DrawItemAdapter;
 import com.lion.graduation.ui.circularImage.CircularImage;
+import com.lion.graduation.ui.fragment.ContentFrame;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
 
     //Toolbar，用来代替ActionBar
     private Toolbar toolbar = null;
-    //抽屉导航菜单
+    //抽屉菜单
     private DrawerLayout mDrawerLayout = null;
-    //抽屉导航菜单的ListView
+    //抽屉菜单，用于点击条目关闭抽屉菜单使用
+    private LinearLayout mLeftDrawer = null;
+    //抽屉菜单的ListView
     private ListView mDrawList = null;
-    private TextView mTextView = null;
     //DrawerLayout.DrawerListener的子类
     private ActionBarDrawerToggle mToggle = null;
     //抽屉菜单显示用户头像的控件
     private CircularImage mCircularImage = null;
+    private List<DrawerItem> items = null;
 
     //测试数据
-    private String[] test01 = {"数据1", "数据2", "数据3", "数据4", "数据5"};
+    private String[] text = {"数据1", "数据2", "数据3", "数据4", "数据5"};
+    private int[] icon = {R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +47,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         init();
-
-        mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "点击成功", Toast.LENGTH_LONG).show();
-            }
-        });
-        mDrawList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test01));
     }
 
 
@@ -54,18 +54,14 @@ public class MainActivity extends ActionBarActivity {
      * init
      */
     private void init() {
-        //style.xml需设置Theme为NoActionBar，否则setSupportActionBar会出错
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
+        initBar();
+        initCircularImage();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawList = (ListView) findViewById(R.id.left_drawer_list);
-        mTextView = (TextView) findViewById(R.id.left_drawer_user_name);
+        mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
 
-        mCircularImage = (CircularImage) findViewById(R.id.left_drawer_user_head);
-        mCircularImage.setImageResource(R.drawable.wolf);
-
+        //
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, toolbar, R.drawable.wolf, R.drawable.wolf) {
 
             @Override
@@ -78,7 +74,55 @@ public class MainActivity extends ActionBarActivity {
                 super.onDrawerClosed(drawerView);
             }
         };
+
         mDrawerLayout.setDrawerListener(mToggle);
+
+        initDrawerItem();
+        mDrawList.setAdapter(new DrawItemAdapter(items, this));
+        //抽屉菜单ListView条目点击事件
+        mDrawList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    getSupportFragmentManager().beginTransaction().add(R.id.content_frame, new ContentFrame()).commit();
+                    //关闭左侧的抽屉菜单
+                    mDrawerLayout.closeDrawer(mLeftDrawer);
+                }
+            }
+        });
+    }
+
+    /**
+     * 初始化抽屉菜单条目信息
+     */
+    private void initDrawerItem() {
+        items = new ArrayList<>();
+        DrawerItem item = null;
+        for (int i = 0; i < text.length; i++) {
+            item = new DrawerItem(icon[i], text[i]);
+            items.add(item);
+        }
+    }
+
+    /**
+     * 初始化Toolbar
+     */
+    private void initBar() {
+        //style.xml需设置Theme为NoActionBar，否则setSupportActionBar会出错
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+        //给左上角图标的左边加上一个返回的图标
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * 初始话抽屉菜单显示的圆形用户头像
+     */
+    private void initCircularImage() {
+        //设置抽屉菜单显示圆形头像
+        mCircularImage = (CircularImage) findViewById(R.id.left_drawer_user_head);
+        mCircularImage.setImageResource(R.drawable.wolf);
     }
 
     @Override
