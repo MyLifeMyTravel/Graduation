@@ -1,6 +1,41 @@
 <resources>
-    <string name="app_name">Graduation</string>
+    <string name="app_name">电力巡检系统</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="item_text">
+        <item>巡检任务</item>
+        <item>统计分析</item>
+        <item>突发情况</item>
+        <item>技术支持</item>
+        <item>设置</item>
+    </string-array>
+
+    <string-array name="task_name">
+        <item>任务1</item>
+        <item>任务2</item>
+        <item>任务3</item>
+        <item>任务4</item>
+        <item>任务5</item>
+        <item>任务6</item>
+    </string-array>
+
+    <string-array name="task_sign">
+        <item>未签到</item>
+        <item>已签到</item>
+        <item>未签到</item>
+        <item>已签到</item>
+        <item>未签到</item>
+        <item>已签到</item>
+    </string-array>
+
+    <string-array name="task_status">
+        <item>未提交</item>
+        <item>提交失败</item>
+        <item>提交成功</item>
+        <item>未提交</item>
+        <item>提交失败</item>
+        <item>提交成功</item>
+    </string-array>
 </resources>

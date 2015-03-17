@@ -1,6 +1,7 @@
 package com.lion.graduation;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,10 +36,13 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mToggle = null;
     //抽屉菜单显示用户头像的控件
     private CircularImage mCircularImage = null;
+    //抽屉菜单条目列表
     private List<DrawerItem> items = null;
+    //主界面显示的Fragement
+    private Fragment fragment = null;
 
     //测试数据
-    private String[] text = {"数据1", "数据2", "数据3", "数据4", "数据5"};
+    private String[] text = null;
     private int[] icon = {R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf};
 
     @Override
@@ -54,6 +58,10 @@ public class MainActivity extends ActionBarActivity {
      * init
      */
     private void init() {
+        fragment = new ContentFrame();
+        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragment).commit();
+
+        initData();
         initBar();
         initCircularImage();
 
@@ -77,19 +85,34 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mToggle);
 
-        initDrawerItem();
         mDrawList.setAdapter(new DrawItemAdapter(items, this));
         //抽屉菜单ListView条目点击事件
         mDrawList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.content_frame, new ContentFrame()).commit();
+                    fragment = new ContentFrame();
                     //关闭左侧的抽屉菜单
-                    mDrawerLayout.closeDrawer(mLeftDrawer);
+                } else if (position == 1) {
+
+                } else if (position == 2) {
+
+                } else if (position == 3) {
+
+                } else if (position == 4) {
+
                 }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                mDrawerLayout.closeDrawer(mLeftDrawer);
             }
         });
+    }
+
+    private void initData() {
+        text = getResources().getStringArray(R.array.item_text);
+
+        initDrawerItem();
     }
 
     /**

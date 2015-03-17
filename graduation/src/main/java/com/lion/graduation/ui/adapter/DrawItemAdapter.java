@@ -73,7 +73,7 @@ public class DrawItemAdapter extends BaseAdapter {
         }
 
         holder.icon.setImageResource(items.get(position).getIcon());
-        holder.text.setText(items.get(position).getItem());
+        holder.text.setText(items.get(position).getText());
         return convertView;
     }
 }
