@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mToggle);
 
-        mDrawList.setAdapter(new DrawItemAdapter(items, this));
+        mDrawList.setAdapter(new DrawItemAdapter(items));
         //抽屉菜单ListView条目点击事件
         mDrawList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
