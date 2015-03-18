@@ -1,4 +1,6 @@
 <resources>
+    <!-- 高德地图key -->
+    <string name="amap_key">bdd84b0c9b0230e6d00ad924d07d10fa</string>
     <string name="app_name">电力巡检系统</string>
 
     <string name="hello_world">Hello world!</string>
