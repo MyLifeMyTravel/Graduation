@@ -19,14 +19,10 @@ import java.util.List;
 public class TaskItemAdapter extends BaseAdapter {
 
     private List<TaskItem> taskItems = null;
-    private Context mContext = null;
-    private LayoutInflater mInflater = null;
     private ViewHolder holder = null;
 
-    public TaskItemAdapter(List<TaskItem> taskItems, Context mContext) {
+    public TaskItemAdapter(List<TaskItem> taskItems) {
         this.taskItems = taskItems;
-        this.mContext = mContext;
-        this.mInflater = LayoutInflater.from(this.mContext);
     }
 
     static class ViewHolder {
@@ -62,7 +58,7 @@ public class TaskItemAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
         if (null == convertView) {
-            convertView = mInflater.inflate(R.layout.task_item, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent, false);
 
             holder.mTask_Name = (TextView) convertView.findViewById(R.id.task_name);
             holder.mTask_Sign = (TextView) convertView.findViewById(R.id.task_sign);

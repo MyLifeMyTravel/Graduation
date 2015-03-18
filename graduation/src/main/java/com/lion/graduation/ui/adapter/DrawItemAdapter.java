@@ -20,14 +20,10 @@ import java.util.List;
 public class DrawItemAdapter extends BaseAdapter {
 
     private List<DrawerItem> items = null;
-    private Context mContext = null;
-    private LayoutInflater mInflater = null;
     private ViewHolder holder = null;
 
-    public DrawItemAdapter(List<DrawerItem> items, Context mContext) {
+    public DrawItemAdapter(List<DrawerItem> items) {
         this.items = items;
-        this.mContext = mContext;
-        mInflater = LayoutInflater.from(mContext);
     }
 
     static class ViewHolder {
@@ -62,7 +58,7 @@ public class DrawItemAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
         if (null == convertView) {
-            convertView = mInflater.inflate(R.layout.draw_item, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.draw_item, parent, false);
 
             holder.icon = (ImageView) convertView.findViewById(R.id.icon);
             holder.text = (TextView) convertView.findViewById(R.id.text);
