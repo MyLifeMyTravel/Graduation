@@ -4,15 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/task_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/drawer_content"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:layout_height="wrap_content" />
+    <!--&lt;!&ndash; 显示天气 &ndash;&gt;-->
+    <!--<include-->
+    <!--android:id="@+id/weather"-->
+    <!--layout="@layout/weather_layout" />-->
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="显示巡检任务" />
+    <!--&lt;!&ndash; 任务显示列表 &ndash;&gt;-->
+    <!--<ListView-->
+    <!--android:id="@+id/task_list"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"></ListView>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:text="显示巡检任务" />-->
 
 </LinearLayout>
