@@ -4,7 +4,7 @@ package com.lion.graduation.model;
  * 任务列表Item模型
  * Created by Lion on 2015/3/17.
  */
-public class TaskItem {
+public class TaskItemModel {
 
     private String task_name = null;
     private String task_sign = null;
