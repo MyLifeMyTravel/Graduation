@@ -5,16 +5,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.lion.graduation.model.DrawerItem;
-import com.lion.graduation.ui.adapter.DrawItemAdapter;
+import com.lion.graduation.model.DrawerItemModel;
+import com.lion.graduation.ui.adapter.RecycleAdapter;
 import com.lion.graduation.ui.circularImage.CircularImage;
 import com.lion.graduation.ui.fragment.ContentFrame;
 
@@ -37,9 +39,13 @@ public class MainActivity extends ActionBarActivity {
     //抽屉菜单显示用户头像的控件
     private CircularImage mCircularImage = null;
     //抽屉菜单条目列表
-    private List<DrawerItem> items = null;
+    private List<DrawerItemModel> items = null;
     //主界面显示的Fragement
     private Fragment fragment = null;
+
+    private RecycleAdapter mRecycleAdapter = null;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     //测试数据
     private String[] text = null;
@@ -65,8 +71,44 @@ public class MainActivity extends ActionBarActivity {
         initBar();
         initCircularImage();
 
+        mRecycleAdapter = new RecycleAdapter(items);
+        mRecycleAdapter.setOnItemClickListener(new RecycleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                if (position == 0) {
+                    fragment = new ContentFrame();
+                    //关闭左侧的抽屉菜单
+                } else if (position == 1) {
+
+                } else if (position == 2) {
+
+                } else if (position == 3) {
+
+                } else if (position == 4) {
+
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                mDrawerLayout.closeDrawer(mLeftDrawer);
+                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mRecyclerView.setAdapter(mRecycleAdapter);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawList = (ListView) findViewById(R.id.left_drawer_list);
+        //mDrawList = (ListView) findViewById(R.id.left_drawer_list);
         mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
 
         //
@@ -85,28 +127,6 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mToggle);
 
-        mDrawList.setAdapter(new DrawItemAdapter(items));
-        //抽屉菜单ListView条目点击事件
-        mDrawList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    fragment = new ContentFrame();
-                    //关闭左侧的抽屉菜单
-                } else if (position == 1) {
-
-                } else if (position == 2) {
-
-                } else if (position == 3) {
-
-                } else if (position == 4) {
-
-                }
-
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
-                mDrawerLayout.closeDrawer(mLeftDrawer);
-            }
-        });
     }
 
     private void initData() {
@@ -120,9 +140,9 @@ public class MainActivity extends ActionBarActivity {
      */
     private void initDrawerItem() {
         items = new ArrayList<>();
-        DrawerItem item = null;
+        DrawerItemModel item = null;
         for (int i = 0; i < text.length; i++) {
-            item = new DrawerItem(icon[i], text[i]);
+            item = new DrawerItemModel(icon[i], text[i]);
             items.add(item);
         }
     }
