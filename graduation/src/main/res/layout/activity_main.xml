@@ -21,55 +21,8 @@
     </LinearLayout>
 
     <!-- The navigation drawer -->
-    <LinearLayout
-        android:background="#FFFFFF"
-        android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/left_drawer_user"
-            android:paddingTop="20dp"
-            android:paddingLeft="20dp"
-            android:paddingBottom="20dp"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:background="@color/skyblue"
-            android:orientation="horizontal">
-
-            <com.lion.graduation.ui.circularImage.CircularImage
-                android:id="@+id/left_drawer_user_head"
-                android:layout_gravity="center_vertical"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
-
-            <TextView
-                android:id="@+id/left_drawer_user_name"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="40dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="厉圣杰" />
-        </LinearLayout>
-        <!-- The navigation drawer list -->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/my_recycler_view"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start" />
-        <!--<ListView
-            android:id="@+id/left_drawer_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp" />-->
-    </LinearLayout>
+    <include
+        android:id="@+id/navdrawer"
+        layout="@layout/navdrawer" />
 
 </android.support.v4.widget.DrawerLayout>
