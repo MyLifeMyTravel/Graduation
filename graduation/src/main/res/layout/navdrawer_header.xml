@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navdrawer_user"
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingBottom="20dp"
+    android:layout_width="240dp"
+    android:layout_height="wrap_content"
+    android:background="@color/skyblue"
+    android:orientation="horizontal">
+
+    <com.lion.graduation.ui.circularImage.CircularImage
+        android:id="@+id/navdrawer_user_head"
+        android:layout_gravity="center_vertical"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+
+    <TextView
+        android:id="@+id/navdrawer_user_name"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
