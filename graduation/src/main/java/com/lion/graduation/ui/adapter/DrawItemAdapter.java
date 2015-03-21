@@ -1,6 +1,5 @@
 package com.lion.graduation.ui.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lion.graduation.R;
-import com.lion.graduation.model.DrawerItem;
+import com.lion.graduation.model.DrawerItemModel;
 
 import java.util.List;
 
@@ -19,10 +18,10 @@ import java.util.List;
  */
 public class DrawItemAdapter extends BaseAdapter {
 
-    private List<DrawerItem> items = null;
+    private List<DrawerItemModel> items = null;
     private ViewHolder holder = null;
 
-    public DrawItemAdapter(List<DrawerItem> items) {
+    public DrawItemAdapter(List<DrawerItemModel> items) {
         this.items = items;
     }
 
@@ -41,7 +40,7 @@ public class DrawItemAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        DrawerItem item = null;
+        DrawerItemModel item = null;
         if (null != items)
             item = items.get(position);
         return item;
@@ -58,7 +57,7 @@ public class DrawItemAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
         if (null == convertView) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.draw_item, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.draw_item_layout, parent, false);
 
             holder.icon = (ImageView) convertView.findViewById(R.id.icon);
             holder.text = (TextView) convertView.findViewById(R.id.text);

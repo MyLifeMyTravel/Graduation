@@ -1,6 +1,5 @@
 package com.lion.graduation.ui.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.lion.graduation.R;
-import com.lion.graduation.model.TaskItem;
+import com.lion.graduation.model.TaskItemModel;
 
 import java.util.List;
 
@@ -18,11 +17,11 @@ import java.util.List;
  */
 public class TaskItemAdapter extends BaseAdapter {
 
-    private List<TaskItem> taskItems = null;
+    private List<TaskItemModel> taskItemModels = null;
     private ViewHolder holder = null;
 
-    public TaskItemAdapter(List<TaskItem> taskItems) {
-        this.taskItems = taskItems;
+    public TaskItemAdapter(List<TaskItemModel> taskItemModels) {
+        this.taskItemModels = taskItemModels;
     }
 
     static class ViewHolder {
@@ -34,16 +33,16 @@ public class TaskItemAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         int count = 0;
-        if (null != taskItems)
-            count = taskItems.size();
+        if (null != taskItemModels)
+            count = taskItemModels.size();
         return count;
     }
 
     @Override
     public Object getItem(int position) {
-        TaskItem task = null;
-        if (null != taskItems)
-            task = taskItems.get(position);
+        TaskItemModel task = null;
+        if (null != taskItemModels)
+            task = taskItemModels.get(position);
         return task;
     }
 
@@ -58,7 +57,7 @@ public class TaskItemAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
         if (null == convertView) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item_layout, parent, false);
 
             holder.mTask_Name = (TextView) convertView.findViewById(R.id.task_name);
             holder.mTask_Sign = (TextView) convertView.findViewById(R.id.task_sign);
@@ -69,9 +68,9 @@ public class TaskItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.mTask_Name.setText(taskItems.get(position).getTask_name());
-        holder.mTask_Sign.setText(taskItems.get(position).getTask_sign());
-        holder.mTask_Status.setText(taskItems.get(position).getTask_status());
+        holder.mTask_Name.setText(taskItemModels.get(position).getTask_name());
+        holder.mTask_Sign.setText(taskItemModels.get(position).getTask_sign());
+        holder.mTask_Status.setText(taskItemModels.get(position).getTask_status());
         return convertView;
     }
 }
