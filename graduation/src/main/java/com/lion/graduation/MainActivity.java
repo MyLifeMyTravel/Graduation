@@ -12,13 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lion.graduation.model.DrawerItemModel;
 import com.lion.graduation.ui.adapter.RecycleAdapter;
 import com.lion.graduation.ui.circularImage.CircularImage;
-import com.lion.graduation.ui.fragment.ContentFrame;
+import com.lion.graduation.ui.fragment.ContentFragement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +32,15 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout = null;
     //抽屉菜单，用于点击条目关闭抽屉菜单使用
     private LinearLayout mLeftDrawer = null;
-    //抽屉菜单的ListView
-    private ListView mDrawList = null;
-    //DrawerLayout.DrawerListener的子类
-    private ActionBarDrawerToggle mToggle = null;
+
+    private LinearLayout mNavDrawerHeader = null;
     //抽屉菜单显示用户头像的控件
     private CircularImage mCircularImage = null;
+    //抽屉菜单显示用户姓名的控件
+    private TextView mUserName = null;
+
+    //DrawerLayout.DrawerListener的子类
+    private ActionBarDrawerToggle mToggle = null;
     //抽屉菜单条目列表
     private List<DrawerItemModel> items = null;
     //主界面显示的Fragement
@@ -49,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
 
     //测试数据
     private String[] text = null;
-    private int[] icon = {R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf};
+    private int[] icon = {R.drawable.document_36, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,19 +67,18 @@ public class MainActivity extends ActionBarActivity {
      * init
      */
     private void init() {
-        fragment = new ContentFrame();
+        fragment = new ContentFragement();
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragment).commit();
 
         initData();
         initBar();
-        initCircularImage();
 
         mRecycleAdapter = new RecycleAdapter(items);
         mRecycleAdapter.setOnItemClickListener(new RecycleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 if (position == 0) {
-                    fragment = new ContentFrame();
+                    fragment = new ContentFragement();
                     //关闭左侧的抽屉菜单
                 } else if (position == 1) {
 
@@ -94,7 +96,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.navdrawer_recycler);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -109,8 +111,9 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawList = (ListView) findViewById(R.id.left_drawer_list);
-        mLeftDrawer = (LinearLayout) findViewById(R.id.left_drawer);
+        mLeftDrawer = (LinearLayout) findViewById(R.id.navdrawer);
 
+        initNavDrawerHeader();
         //
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, toolbar, R.drawable.wolf, R.drawable.wolf) {
 
@@ -127,6 +130,15 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mToggle);
 
+    }
+
+    private void initNavDrawerHeader() {
+        mNavDrawerHeader = (LinearLayout) mLeftDrawer.findViewById(R.id.navdrawer_header);
+
+        initCircularImage();
+
+        mUserName = (TextView) mNavDrawerHeader.findViewById(R.id.navdrawer_user_name);
+        mUserName.setText("厉圣杰");
     }
 
     private void initData() {
@@ -164,7 +176,7 @@ public class MainActivity extends ActionBarActivity {
      */
     private void initCircularImage() {
         //设置抽屉菜单显示圆形头像
-        mCircularImage = (CircularImage) findViewById(R.id.left_drawer_user_head);
+        mCircularImage = (CircularImage) mNavDrawerHeader.findViewById(R.id.navdrawer_user_head);
         mCircularImage.setImageResource(R.drawable.wolf);
     }
 
