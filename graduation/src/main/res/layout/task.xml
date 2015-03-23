@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/task_sign"
+        layout="@layout/task_sign" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_weight="1000"
+        android:id="@+id/task_devices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!--<ListView-->
+    <!--android:layout_weight="1000"-->
+    <!--android:id="@+id/task_item_list"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"></ListView>-->
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/task_commit"
+        layout="@layout/task_sign" />
+</LinearLayout>
