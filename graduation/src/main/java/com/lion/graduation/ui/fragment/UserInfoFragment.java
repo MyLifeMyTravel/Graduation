@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lion.graduation.R;
+
 /**
  * 用户信息显示
  * Created by Lion on 2015/3/20.
@@ -20,7 +22,8 @@ public class UserInfoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.task_devices_item, container, false);
+        return view;
     }
 
     @Override
