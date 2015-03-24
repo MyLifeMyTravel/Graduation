@@ -12,6 +12,7 @@
         layout="@layout/task_sign" />
 
     <android.support.v7.widget.RecyclerView
+        android:padding="15dp"
         android:layout_weight="1000"
         android:id="@+id/task_devices"
         android:layout_width="match_parent"

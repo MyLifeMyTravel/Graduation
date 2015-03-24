@@ -4,14 +4,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/click1"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/click2"
+        <TextView
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备1" />
+
+        <ImageButton
+            android:layout_alignParentRight="true"
+            android:id="@+id/device_drop_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/drop_down" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/hidden"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/click1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/click2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 </LinearLayout>
