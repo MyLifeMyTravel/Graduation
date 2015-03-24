@@ -1,5 +1,6 @@
 package com.lion.graduation;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -15,10 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lion.graduation.Application.MyApplication;
 import com.lion.graduation.model.DrawerItemModel;
 import com.lion.graduation.ui.adapter.RecycleAdapter;
 import com.lion.graduation.ui.circularImage.CircularImage;
 import com.lion.graduation.ui.fragment.ContentFragement;
+import com.lion.graduation.ui.fragment.UserInfoFragment;
+import com.lion.graduation.util.BitmapUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,47 +77,10 @@ public class MainActivity extends ActionBarActivity {
         initData();
         initBar();
 
-        mRecycleAdapter = new RecycleAdapter(items);
-        mRecycleAdapter.setOnItemClickListener(new RecycleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                if (position == 0) {
-                    fragment = new ContentFragement();
-                    //关闭左侧的抽屉菜单
-                } else if (position == 1) {
+        initRecyclerAdapter();
+        initRecyclerView();
 
-                } else if (position == 2) {
-
-                } else if (position == 3) {
-
-                } else if (position == 4) {
-
-                }
-
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
-                mDrawerLayout.closeDrawer(mLeftDrawer);
-                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_LONG).show();
-            }
-        });
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.navdrawer_recycler);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mRecyclerView.setAdapter(mRecycleAdapter);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //mDrawList = (ListView) findViewById(R.id.left_drawer_list);
-        mLeftDrawer = (LinearLayout) findViewById(R.id.navdrawer);
-
-        initNavDrawerHeader();
+        initNavDrawer();
         //
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, toolbar, R.drawable.wolf, R.drawable.wolf) {
 
@@ -130,15 +97,6 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mToggle);
 
-    }
-
-    private void initNavDrawerHeader() {
-        mNavDrawerHeader = (LinearLayout) mLeftDrawer.findViewById(R.id.navdrawer_header);
-
-        initCircularImage();
-
-        mUserName = (TextView) mNavDrawerHeader.findViewById(R.id.navdrawer_user_name);
-        mUserName.setText("厉圣杰");
     }
 
     private void initData() {
@@ -171,13 +129,77 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void initRecyclerAdapter() {
+        mRecycleAdapter = new RecycleAdapter(items);
+        mRecycleAdapter.setOnItemClickListener(new RecycleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                if (position == 0) {
+                    fragment = new ContentFragement();
+                    //关闭左侧的抽屉菜单
+                } else if (position == 1) {
+
+                } else if (position == 2) {
+
+                } else if (position == 3) {
+
+                } else if (position == 4) {
+
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                mDrawerLayout.closeDrawer(mLeftDrawer);
+                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void initRecyclerView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.navdrawer_recycler);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mRecyclerView.setAdapter(mRecycleAdapter);
+    }
+
+    private void initNavDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //mDrawList = (ListView) findViewById(R.id.left_drawer_list);
+        mLeftDrawer = (LinearLayout) findViewById(R.id.navdrawer);
+
+        initNavDrawerHeader();
+    }
+
+    private void initNavDrawerHeader() {
+        mNavDrawerHeader = (LinearLayout) mLeftDrawer.findViewById(R.id.navdrawer_header);
+
+        initCircularImage();
+
+        mUserName = (TextView) mNavDrawerHeader.findViewById(R.id.navdrawer_user_name);
+        mUserName.setText("厉圣杰");
+    }
+
     /**
      * 初始话抽屉菜单显示的圆形用户头像
      */
     private void initCircularImage() {
         //设置抽屉菜单显示圆形头像
         mCircularImage = (CircularImage) mNavDrawerHeader.findViewById(R.id.navdrawer_user_head);
-        mCircularImage.setImageResource(R.drawable.wolf);
+        mCircularImage.setImageBitmap(BitmapUtils.readBitMap(this, R.drawable.wolf));
+        mCircularImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new UserInfoFragment()).addToBackStack(null).commit();
+                mDrawerLayout.closeDrawer(mLeftDrawer);
+            }
+        });
     }
 
     @Override
@@ -200,5 +222,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //退出应用时结束进程
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
