@@ -18,6 +18,7 @@ import com.amap.api.location.AMapLocalWeatherLive;
 import com.amap.api.location.LocationManagerProxy;
 import com.lion.graduation.R;
 import com.lion.graduation.model.TaskItemModel;
+import com.lion.graduation.model.WeatherModel;
 import com.lion.graduation.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation.ui.adapter.TaskRecyclerViewAdapter;
 
@@ -31,6 +32,7 @@ import java.util.List;
 public class ContentFragement extends Fragment {
 
     private List<TaskItemModel> items = null;
+    private WeatherModel weatherModel = null;
 
     //RecylerView对象
     private RecyclerView mRecyclerView;
@@ -46,6 +48,8 @@ public class ContentFragement extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        weatherModel = new WeatherModel();
+
         initTaskData();
     }
 
@@ -66,7 +70,6 @@ public class ContentFragement extends Fragment {
             @Override
             public void onItemClick(View v, int position) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new TaskFragment()).addToBackStack(null).commit();
-                Toast.makeText(getActivity(), position + "", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -77,6 +80,7 @@ public class ContentFragement extends Fragment {
     private void initWeatherCard(View view) {
         weather_Card = (CardView) view.findViewById(R.id.weather);
         weather_Content = (TextView) weather_Card.findViewById(R.id.weather_content);
+        weather_Content.setText(weatherModel.toString());
     }
 
     private void initTaskData() {
@@ -111,13 +115,13 @@ public class ContentFragement extends Fragment {
         @Override
         public void onWeatherLiveSearched(AMapLocalWeatherLive aMapLocalWeatherLive) {
             if (aMapLocalWeatherLive != null && aMapLocalWeatherLive.getAMapException().getErrorCode() == 0) {
-                String city = aMapLocalWeatherLive.getCity();//城市
-                String weather = aMapLocalWeatherLive.getWeather();//天气情况
-                String windDir = aMapLocalWeatherLive.getWindDir();//风向
-                String windPower = aMapLocalWeatherLive.getWindPower();//风力
-                String humidity = aMapLocalWeatherLive.getHumidity();//空气湿度
-                String reportTime = aMapLocalWeatherLive.getReportTime();//数据发布时间
-                weather_Content.setText("城市:" + city + "\n天气情况:" + weather + "\n风向:" + windDir + "\n风力:" + windPower + "\n空气湿度:" + humidity + "\n发布时间:" + reportTime);
+                weatherModel.setCity(aMapLocalWeatherLive.getCity());
+                weatherModel.setWeather(aMapLocalWeatherLive.getWeather());
+                weatherModel.setWindDir(aMapLocalWeatherLive.getWindDir());
+                weatherModel.setWindPower(aMapLocalWeatherLive.getWindPower());
+                weatherModel.setHumidity(aMapLocalWeatherLive.getHumidity());
+                weatherModel.setReportTime(aMapLocalWeatherLive.getReportTime());
+                weather_Content.setText(weatherModel.toString());
             } else {
                 // 获取实时天气失败
                 Toast.makeText(getActivity(), "获取天气预报失败:" + aMapLocalWeatherLive.getAMapException().getErrorMessage(), Toast.LENGTH_SHORT).show();
