@@ -5,13 +5,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.lion.graduation.json.LoginDto;
 import com.lion.graduation.util.HttpUtils;
 import com.lion.graduation.util.NetworkUtils;
+
+import java.lang.reflect.Type;
 
 /**
  * 用户登录界面，打开应用会跳转至此，若account.xml存在，则直接进入系统，否则，重新登录
@@ -68,7 +74,7 @@ public class LoginActivity extends ActionBarActivity {
     /**
      * 用户登录
      *
-     * @param account 用户identifier
+     * @param account 用户帐号
      * @param pwd     用户密码
      */
     private void login(final String account, final String pwd) {
@@ -77,9 +83,12 @@ public class LoginActivity extends ActionBarActivity {
             @Override
             public void run() {
                 final String result = HttpUtils.loginByHttpGet(account, pwd);
-                if (result.trim().equals("succeed")) {
-                    saveAccount(account);
-                    updateToastUI("欢迎登录，***");
+                Gson gson = new Gson();
+                LoginDto loginDto = gson.fromJson(result, LoginDto.class);
+                Log.e("lion", loginDto.toString());
+                if (loginDto.getFlag().trim().equals("succeed")) {
+                    saveAccount(loginDto);
+                    updateToastUI("欢迎登录，" + loginDto.getUser().getName() + "!");
                     start();
                 } else {
                     updateToastUI("用户名或密码错误，请重试！");
@@ -114,10 +123,14 @@ public class LoginActivity extends ActionBarActivity {
      *
      * @param account
      */
-    private void saveAccount(String account) {
+    private void saveAccount(LoginDto account) {
         SharedPreferences sharedPreferences = getSharedPreferences("account", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("account", account);
+        editor.putString("id", account.getUser().getId());
+        editor.putString("account", account.getUser().getAccount());
+        editor.putString("name", account.getUser().getName());
+        editor.putString("pic", account.getUser().getPic());
+        editor.putString("info", account.getUser().getInfo());
         editor.commit();
     }
 }
