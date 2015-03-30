@@ -29,7 +29,32 @@ public class HttpUtils {
      */
     public interface HttpUrl {
         String DOMAIN_URL = "http://172.26.160.1/";
-        String LOGIN_URL = DOMAIN_URL + "login.php";
+        String LOGIN_URL = DOMAIN_URL + "login.php?account=%s&pwd=%s";
+        String GET_TASK_URL = DOMAIN_URL + "getTask.php?account=%s";
+        String GET_COUNT_URL = DOMAIN_URL + "getTaskCount.php?account=%s";
+    }
+
+    public static String httpGet(String url) {
+        String result = null;
+        //创建一个HttpClient对象，用于发送GET请求
+        HttpClient client = new DefaultHttpClient();
+
+        //创建一个HttpGet对象
+        HttpGet httpGet = new HttpGet(url);
+        try {
+            HttpResponse httpResponse = client.execute(httpGet);
+            //读取状态码
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
+            //如statusCode = 200,则代表连接成功
+            if (statusCode == 200) {
+                HttpEntity entity = httpResponse.getEntity();
+                InputStream is = entity.getContent();
+                result = streamToStr(is);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public static String loginByHttpGet(String account, String pwd) {
