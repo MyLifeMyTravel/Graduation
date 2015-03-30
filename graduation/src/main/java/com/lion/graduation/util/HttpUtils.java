@@ -57,30 +57,6 @@ public class HttpUtils {
         return result;
     }
 
-    public static String loginByHttpGet(String account, String pwd) {
-        String result = null;
-        //创建一个HttpClient对象，用于发送GET请求
-        HttpClient client = new DefaultHttpClient();
-
-        String login_uri = HttpUrl.LOGIN_URL + ".?" + HttpParams.ACCOUNT + "=" + account + "&" + HttpParams.PWD + "=" + pwd;
-        //创建一个HttpGet对象
-        HttpGet httpGet = new HttpGet(login_uri);
-        try {
-            HttpResponse httpResponse = client.execute(httpGet);
-            //读取状态码
-            int statusCode = httpResponse.getStatusLine().getStatusCode();
-            //如statusCode = 200,则代表连接成功
-            if (statusCode == 200) {
-                HttpEntity entity = httpResponse.getEntity();
-                InputStream is = entity.getContent();
-                result = streamToStr(is);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     /**
      * 把流对象转换成字符串对象
      *
