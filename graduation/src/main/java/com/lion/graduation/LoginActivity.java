@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lion.graduation.json.LoginDto;
+import com.lion.graduation.util.Constant;
 import com.lion.graduation.util.HttpUtils;
 import com.lion.graduation.util.NetworkUtils;
 
@@ -34,8 +35,8 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         //判断用户是否登录过，若登录过，则直接跳过登陆界面
-        SharedPreferences sharedPreferences = getSharedPreferences("account", MODE_PRIVATE);
-        account = sharedPreferences.getString("account", null);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
+        account = sharedPreferences.getString(Constant.Key.ACCOUNT, null);
         if (null == account) {
             init();
         } else {
@@ -82,10 +83,12 @@ public class LoginActivity extends ActionBarActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final String result = HttpUtils.loginByHttpGet(account, pwd);
+                //后期完成后需要把HttpGet请求改成HttpPost
+                String url = String.format(HttpUtils.HttpUrl.LOGIN_URL, account, pwd);
+                final String result = HttpUtils.httpGet(url);
                 Gson gson = new Gson();
                 LoginDto loginDto = gson.fromJson(result, LoginDto.class);
-                Log.e("lion", loginDto.toString());
+                Log.e(Constant.TAG, loginDto.toString());
                 if (loginDto.getFlag().trim().equals("succeed")) {
                     saveAccount(loginDto);
                     updateToastUI("欢迎登录，" + loginDto.getUser().getName() + "!");
@@ -124,13 +127,13 @@ public class LoginActivity extends ActionBarActivity {
      * @param account
      */
     private void saveAccount(LoginDto account) {
-        SharedPreferences sharedPreferences = getSharedPreferences("account", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("id", account.getUser().getId());
-        editor.putString("account", account.getUser().getAccount());
-        editor.putString("name", account.getUser().getName());
-        editor.putString("pic", account.getUser().getPic());
-        editor.putString("info", account.getUser().getInfo());
+        editor.putString(Constant.Key.ID, account.getUser().getId());
+        editor.putString(Constant.Key.ACCOUNT, account.getUser().getAccount());
+        editor.putString(Constant.Key.NAME, account.getUser().getName());
+        editor.putString(Constant.Key.PIC, account.getUser().getPic());
+        editor.putString(Constant.Key.INFO, account.getUser().getInfo());
         editor.commit();
     }
 }
