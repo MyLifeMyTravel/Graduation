@@ -1,6 +1,7 @@
 package com.lion.graduation.json;
 
 /**
+ * 登录数据传输对象
  * Created by Lion on 2015/3/29.
  */
 public class LoginDto {
