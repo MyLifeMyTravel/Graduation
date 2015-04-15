@@ -81,13 +81,13 @@ public class MainActivity extends ActionBarActivity {
         fragment = new ContentFragement();
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragment).commit();
 
-        initBar();
-        initNavDrawer();
         initData();
+        initBar();
 
         initRecyclerAdapter();
         initRecyclerView();
 
+        initNavDrawer();
         //
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, toolbar, R.drawable.wolf, R.drawable.wolf) {
 
