@@ -16,13 +16,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lion.graduation.Application.MyApplication;
 import com.lion.graduation.model.DrawerItemModel;
-import com.lion.graduation.ui.adapter.RecycleAdapter;
+import com.lion.graduation.ui.DividerItemDecoration;
+import com.lion.graduation.ui.adapter.DrawerRecyclerAdapter;
 import com.lion.graduation.ui.circularImage.CircularImage;
 import com.lion.graduation.ui.fragment.ContentFragement;
+import com.lion.graduation.ui.fragment.TaskListFragement;
 import com.lion.graduation.ui.fragment.UserInfoFragment;
 import com.lion.graduation.util.BitmapUtils;
+import com.lion.graduation.util.Constant;
+import com.lion.graduation.util.HttpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +53,11 @@ public class MainActivity extends ActionBarActivity {
     //主界面显示的Fragement
     private Fragment fragment = null;
 
-    private RecycleAdapter mRecycleAdapter = null;
+    private DrawerRecyclerAdapter mRecycleAdapter = null;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private String account = null;
     //测试数据
     private String[] text = null;
     private int[] icon = {R.drawable.document_36, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf, R.drawable.wolf};
@@ -63,6 +67,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //获取Account
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
+        account = sharedPreferences.getString(Constant.Key.ACCOUNT, null);
         init();
     }
 
@@ -74,13 +81,13 @@ public class MainActivity extends ActionBarActivity {
         fragment = new ContentFragement();
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragment).commit();
 
-        initData();
         initBar();
+        initNavDrawer();
+        initData();
 
         initRecyclerAdapter();
         initRecyclerView();
 
-        initNavDrawer();
         //
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, toolbar, R.drawable.wolf, R.drawable.wolf) {
 
@@ -103,6 +110,16 @@ public class MainActivity extends ActionBarActivity {
         text = getResources().getStringArray(R.array.item_text);
 
         initDrawerItem();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //获取任务个数
+                String count = HttpUtils.httpGet(String.format(HttpUtils.HttpUrl.GET_COUNT_URL, account));
+                items.get(0).setCount(Integer.parseInt(count));
+                //通知RecyclerView数据已经更新
+                mRecycleAdapter.notifyDataSetChanged();
+            }
+        }).start();
     }
 
     /**
@@ -115,6 +132,7 @@ public class MainActivity extends ActionBarActivity {
             item = new DrawerItemModel(icon[i], text[i]);
             items.add(item);
         }
+        items.get(0).setTaskItem(true);
     }
 
     /**
@@ -130,13 +148,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initRecyclerAdapter() {
-        mRecycleAdapter = new RecycleAdapter(items);
-        mRecycleAdapter.setOnItemClickListener(new RecycleAdapter.OnItemClickListener() {
+        mRecycleAdapter = new DrawerRecyclerAdapter(items);
+        mRecycleAdapter.setOnItemClickListener(new DrawerRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                if (position == 0) {
-                    fragment = new ContentFragement();
-                    //关闭左侧的抽屉菜单
+                if (position == 0) {//任务界面
+                    fragment = new TaskListFragement();
                 } else if (position == 1) {
 
                 } else if (position == 2) {
@@ -152,6 +169,7 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_LONG).show();
             }
         });
+        mRecycleAdapter.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
@@ -165,6 +183,8 @@ public class MainActivity extends ActionBarActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        //添加分割线
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL_LIST));
         // specify an adapter (see also next example)
         mRecyclerView.setAdapter(mRecycleAdapter);
     }
@@ -183,7 +203,8 @@ public class MainActivity extends ActionBarActivity {
         initCircularImage();
 
         mUserName = (TextView) mNavDrawerHeader.findViewById(R.id.navdrawer_user_name);
-        mUserName.setText("厉圣杰");
+        SharedPreferences sharepreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
+        mUserName.setText(sharepreferences.getString(Constant.Key.NAME, null));
     }
 
     /**

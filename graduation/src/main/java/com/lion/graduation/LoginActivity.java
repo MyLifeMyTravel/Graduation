@@ -1,6 +1,5 @@
 package com.lion.graduation;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,13 +11,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.lion.graduation.json.LoginDto;
 import com.lion.graduation.util.Constant;
 import com.lion.graduation.util.HttpUtils;
 import com.lion.graduation.util.NetworkUtils;
-
-import java.lang.reflect.Type;
 
 /**
  * 用户登录界面，打开应用会跳转至此，若account.xml存在，则直接进入系统，否则，重新登录
