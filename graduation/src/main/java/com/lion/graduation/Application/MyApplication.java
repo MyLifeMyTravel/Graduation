@@ -17,6 +17,9 @@ import com.amap.api.location.LocationProviderProxy;
  */
 public class MyApplication extends Application implements AMapLocationListener {
 
+    /**
+     * 官方给出的解释如下:定位对象是单列模式，添加多个会相互干扰，导致设置失误。
+     */
     public LocationManagerProxy mLocationManagerProxy = null;
     public SharedPreferences sp = null;
     protected SharedPreferences.Editor editor = null;
