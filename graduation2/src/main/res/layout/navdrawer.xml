@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 抽屉菜单布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#FFFFFF"
+    android:id="@+id/navdrawer"
+    android:layout_width="240dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:orientation="vertical">
+
+    <!--nav drawer header-->
+    <include
+        android:id="@+id/navdrawer_header"
+        layout="@layout/navdrawer_header" />
+
+    <!-- The navigation drawer list -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/navdrawer_recycler"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start" />
+    <!--<ListView
+        android:id="@+id/left_drawer_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />-->
+</LinearLayout>

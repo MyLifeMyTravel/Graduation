@@ -1,0 +1,63 @@
+<resources>
+    <!-- 高德地图key -->
+    <string name="amap_key">bdd84b0c9b0230e6d00ad924d07d10fa</string>
+    <string name="app_name">电力巡检系统</string>
+
+    <!-- login -->
+    <string name="user_name">帐&#160; &#160; 号:</string>
+    <string name="user_pwd">密&#160; &#160; 码:</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- menu -->
+    <string name="rich_sacn">扫一扫</string>
+    <string name="action_settings">Settings</string>
+    <string name="task_commit">提交</string>
+
+    <string name="task_tip">%1$s,您当前共有%2$s项巡检任务！请及时完成！</string>
+    <string name="label_mainActivity">电力巡检系统</string>
+    <string name="label_taskActivity">巡检设备列表</string>
+
+    <string name="tips_distance_too_long">您距离巡检地点还有一段距离，请重新定位或者到巡检地点后重新签到</string>
+
+    <!-- 签到 -->
+    <string-array name="sign">
+        <item>签到</item>
+        <item>正在签到...</item>
+        <item>已签到</item>
+    </string-array>
+
+    <string-array name="item_text">
+        <item>巡检任务</item>
+        <item>突发情况</item>
+        <item>技术支持</item>
+        <item>设置</item>
+        <item>关于</item>
+    </string-array>
+
+    <string-array name="task_name">
+        <item>任务1</item>
+        <item>任务2</item>
+        <item>任务3</item>
+        <item>任务4</item>
+        <item>任务5</item>
+        <item>任务6</item>
+    </string-array>
+
+    <string-array name="task_sign">
+        <item>未签到</item>
+        <item>已签到</item>
+        <item>未签到</item>
+        <item>已签到</item>
+        <item>未签到</item>
+        <item>已签到</item>
+    </string-array>
+
+    <string-array name="task_status">
+        <item>未提交</item>
+        <item>提交失败</item>
+        <item>提交成功</item>
+        <item>未提交</item>
+        <item>提交失败</item>
+        <item>提交成功</item>
+    </string-array>
+</resources>
