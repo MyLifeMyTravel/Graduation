@@ -89,7 +89,10 @@ public class GuideListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getFileList();
+        //当fileName为初始状态时获取数据
+        if (fileName.size() == 0) {
+            getFileList();
+        }
     }
 
     @Override
@@ -99,8 +102,6 @@ public class GuideListFragment extends Fragment {
     }
 
     private void getFileList() {
-        fileName.clear();
-        file.clear();
         FinalHttp fh = new FinalHttp();
         fh.get(URL_FILELIST, new AjaxCallBack<Object>() {
 
