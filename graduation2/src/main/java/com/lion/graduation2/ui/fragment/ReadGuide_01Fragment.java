@@ -1,6 +1,7 @@
 package com.lion.graduation2.ui.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,11 +24,15 @@ import net.tsz.afinal.http.AjaxCallBack;
  */
 public class ReadGuide_01Fragment extends Fragment {
 
+    /* ProgressDialog */
+    private ProgressDialog dialog = null;
     private TextView showText;
     /* guide目录的文件路径 */
     private String URL_GUIDE_FILE;
     private String title;
     private OnTitleSetListener onTitleSetListener;
+    /* 加载提示 */
+    private static final String LOADING = "正在加载，请稍后...";
 
     @Override
     public void onAttach(Activity activity) {
@@ -70,17 +75,15 @@ public class ReadGuide_01Fragment extends Fragment {
             @Override
             public void onSuccess(Object o) {
                 super.onSuccess(o);
+                dialog.dismiss();
                 showText.setText((String) o);
-            }
-
-            @Override
-            public void onLoading(long count, long current) {
-                super.onLoading(count, current);
             }
 
             @Override
             public void onStart() {
                 super.onStart();
+                dialog = ProgressDialog.show(getActivity(), null, LOADING);
+
             }
 
             @Override
