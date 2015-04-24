@@ -1,6 +1,5 @@
 package com.lion.graduation2.ui.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,13 +22,13 @@ import com.amap.api.location.LocationManagerProxy;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.lion.graduation2.MainActivity;
 import com.lion.graduation2.R;
 import com.lion.graduation2.bean.json.TaskBean;
 import com.lion.graduation2.bean.json.UserBean;
 import com.lion.graduation2.bean.model.WeatherModel;
 import com.lion.graduation2.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation2.ui.adapter.TaskListRecyclerViewAdapter;
+import com.lion.graduation2.ui.fragment.base.BaseTourFragment;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.TimeUtils;
@@ -40,13 +39,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 开启应用显示的界面
  * Created by Lion on 2015/3/13.
  */
-public class ContentFragment extends BaseFragment {
+public class ContentFragment extends BaseTourFragment {
 
     private WeatherModel weatherModel = null;
 
@@ -109,9 +107,6 @@ public class ContentFragment extends BaseFragment {
                 //((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 Fragment fragment = new TaskFragment();
                 tPostion = position;
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
-//                fragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
             }
         });
@@ -138,6 +133,7 @@ public class ContentFragment extends BaseFragment {
             @Override
             public void run() {
                 String result = HttpUtils.httpGet(String.format(url, user.getAccount()));
+                Log.d(Constant.TAG, "巡检任务数据:" + result);
                 Gson gson = new Gson();
                 try {
                     Type listType = new TypeToken<LinkedList<TaskBean>>() {

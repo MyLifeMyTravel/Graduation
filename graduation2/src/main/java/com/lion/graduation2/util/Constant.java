@@ -9,7 +9,7 @@ import android.os.Environment;
 public class Constant {
 
     //日志输出TAG
-    public static final String TAG = "lion";
+    public static final String TAG = "bysj";
 
     //数据库名字
     public static final String DB = "bysj";

@@ -12,6 +12,7 @@ public class SblxBean {
     private int cdlx_id;
     private String name;
     private String params;
+    private boolean status;
 
     public int getId() {
         return id;
@@ -45,6 +46,14 @@ public class SblxBean {
         this.params = params;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "SblxBean{" +
@@ -52,6 +61,7 @@ public class SblxBean {
                 ", cdlx_id=" + cdlx_id +
                 ", name='" + name + '\'' +
                 ", params='" + params + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

@@ -29,12 +29,13 @@ public class HttpUtils {
      */
     public interface HttpUrl {
         //虚拟机
-        //String DOMAIN_URL = "http://192.168.191.1/php/";
+        String DOMAIN_URL = "http://192.168.56.1/php/";
         //实体机
-        String DOMAIN_URL = "http://www.littlejie.com/php/";
+        //String DOMAIN_URL = "http://www.littlejie.com/php/";
         String LOGIN_URL = DOMAIN_URL + "login.php?account=%s&password=%s";
         String GET_TASK_URL = DOMAIN_URL + "getTask.php?account=%s";
         String GET_PLACE_URL = DOMAIN_URL + "getPlaceList.php?site_id=%s";
+        String POST_HISTORY_URL = DOMAIN_URL + "post/postHistory.php";
         String GET_COUNT_URL = DOMAIN_URL + "getTaskCount.php?account=%s";
     }
 

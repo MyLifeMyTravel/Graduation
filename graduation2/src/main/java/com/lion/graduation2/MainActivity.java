@@ -29,7 +29,7 @@ import com.lion.graduation2.bean.json.UserBean;
 import com.lion.graduation2.bean.model.DrawerItemModel;
 import com.lion.graduation2.ui.DividerItemDecoration;
 import com.lion.graduation2.ui.adapter.DrawerRecyclerViewAdapter;
-import com.lion.graduation2.ui.fragment.BaseFragment;
+import com.lion.graduation2.ui.fragment.base.BaseTourFragment;
 import com.lion.graduation2.ui.fragment.ContentFragment;
 import com.lion.graduation2.util.BitmapUtils;
 import com.lion.graduation2.util.Constant;
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity implements BaseFragment.OnDispalyHomeListener, BaseFragment.OnTitleSet {
+public class MainActivity extends ActionBarActivity implements BaseTourFragment.OnDispalyHomeListener, BaseTourFragment.OnTitleSet {
 
     private List<TaskBean> task;
     private List<PlaceBean> places;

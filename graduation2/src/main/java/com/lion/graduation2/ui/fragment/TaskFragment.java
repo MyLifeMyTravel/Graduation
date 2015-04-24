@@ -26,14 +26,17 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.lion.graduation2.R;
 import com.lion.graduation2.bean.json.PlaceBean;
-import com.lion.graduation2.bean.json.SiteBean;
+import com.lion.graduation2.bean.json.SblxBean;
 import com.lion.graduation2.bean.json.TaskBean;
 import com.lion.graduation2.ui.DividerItemDecoration;
 import com.lion.graduation2.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation2.ui.adapter.PlaceRecyclerViewAdapter;
+import com.lion.graduation2.ui.fragment.base.BaseTourFragment;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.amap.MyGeocodeSearch;
+
+import net.tsz.afinal.FinalDb;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -45,9 +48,10 @@ import java.util.List;
  * 任务具体信息显示
  * Created by Lion on 2015/3/20.
  */
-public class TaskFragment extends BaseFragment implements AMapLocationListener {
+public class TaskFragment extends BaseTourFragment implements AMapLocationListener {
 
     private final static float DISTANCE = 300;
+    private boolean isSign = false;
 
     //签到、提交按钮
     private String[] sign = null;
@@ -68,13 +72,15 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
 
     private String URL = HttpUtils.HttpUrl.GET_PLACE_URL;
 
+    private FinalDb db = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sign = getResources().getStringArray(R.array.sign);
         task = tasks.get(tPostion);
         //设置ActionBar的Title
-        getTitleListener().setTitle(task.getSite().getName() + task.getRwlx());
+        //getTitleListener().setTitle(task.getSite().getName() + task.getRwlx());
 
         mLocationManagerProxy = LocationManagerProxy.getInstance(getActivity());
 
@@ -87,6 +93,7 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
             }
         });
         places = new ArrayList<>();
+        db = FinalDb.create(getActivity(), Constant.DB);
         getPlaceList();
     }
 
@@ -94,18 +101,49 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.task_detail_layout, container, false);
 
-        init(view);
+        //init(view);
+
+        taskSign = (CardView) view.findViewById(R.id.task_sign);
+        taskSign.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
+        taskSignBtn = (Button) taskSign.findViewById(R.id.btn);
+
+        taskCommit = (CardView) view.findViewById(R.id.task_commit);
+        taskCommit.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
+        taskCommitBtn = (Button) taskCommit.findViewById(R.id.btn);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.place);
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecycleAdapter = new PlaceRecyclerViewAdapter(places);
+        mRecycleAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                //if (isSign) {
+                Fragment fragment = new DeviceFragment();
+                pPosition = position;
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
+//                fragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
+                //}
+            }
+        });
+
+        //添加分割线
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        // specify an adapter (see also next example)
+        mRecyclerView.setAdapter(mRecycleAdapter);
+        
 
         set();
 
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //设置ActionBar的Icon是否可见
-        getDispalyHomeListener().showDisplayHome(false);
     }
 
     private void init(View view) {
@@ -118,7 +156,6 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
         taskCommit.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
         taskCommitBtn = (Button) taskCommit.findViewById(R.id.btn);
 
-        mRecycleAdapter = new PlaceRecyclerViewAdapter(places);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.place);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -127,6 +164,21 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecycleAdapter = new PlaceRecyclerViewAdapter(places);
+        mRecycleAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                //if (isSign) {
+                Fragment fragment = new DeviceFragment();
+                pPosition = position;
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
+//                fragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
+                //}
+            }
+        });
 
         //添加分割线
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
@@ -174,6 +226,7 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
             //此处还需获取巡检目的地的坐标
             float distance = AMapUtils.calculateLineDistance(latLng, sitePoint);
             if (distance < DISTANCE) {
+                isSign = true;
                 //Toast.makeText(getActivity(), distance + "", Toast.LENGTH_LONG).show();
                 //设置CardView背景色
                 //taskSign.setCardBackgroundColor(getResources().getColor(R.color.slategray));
@@ -211,12 +264,6 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
 
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        getDispalyHomeListener().showDisplayHome(true);
-    }
-
     private void getPlaceList() {
         if (places == null) {
             places = new ArrayList<>();
@@ -229,11 +276,13 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
                 String result = HttpUtils.httpGet(String.format(URL, task.getSite().getId()));
                 Gson gson = new Gson();
                 try {
+                    List<SblxBean> sblxs = db.findAll(SblxBean.class);
                     Type listType = new TypeToken<LinkedList<PlaceBean>>() {
                     }.getType();
                     LinkedList<PlaceBean> items = gson.fromJson(result, listType);
                     for (Iterator iterator = items.iterator(); iterator.hasNext(); ) {
                         PlaceBean place = (PlaceBean) iterator.next();
+                        place.setSblxs(getDeviceList(place.getCdlx_id(), sblxs));
                         Log.e(Constant.TAG, place.toString());
                         places.add(place);
                     }
@@ -250,5 +299,15 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
                 }
             }
         }).start();
+    }
+
+    public List<SblxBean> getDeviceList(int cdlx_id, List<SblxBean> sblxs) {
+        List<SblxBean> list = new ArrayList<>();
+        for (int i = 0; i < sblxs.size(); i++) {
+            if (sblxs.get(i).getCdlx_id() == cdlx_id) {
+                list.add(sblxs.get(i));
+            }
+        }
+        return list;
     }
 }

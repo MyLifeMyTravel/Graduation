@@ -12,6 +12,7 @@ public class XsbzBean {
     private int sblx_id;
     private int xsnr_id;
     private String description;
+    private String note;
 
     public int getId() {
         return id;
@@ -45,6 +46,14 @@ public class XsbzBean {
         this.description = description;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     @Override
     public String toString() {
         return "XsbzBean{" +
@@ -52,6 +61,7 @@ public class XsbzBean {
                 ", sblx_id=" + sblx_id +
                 ", xsnr_id=" + xsnr_id +
                 ", description='" + description + '\'' +
+                ", note='" + note + '\'' +
                 '}';
     }
 }
