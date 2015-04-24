@@ -2,26 +2,19 @@ package com.lion.graduation2.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lion.graduation2.R;
-import com.lion.graduation2.bean.json.CdlxBean;
 import com.lion.graduation2.bean.json.PlaceBean;
 import com.lion.graduation2.bean.json.SblxBean;
 import com.lion.graduation2.util.Constant;
 
 import net.tsz.afinal.FinalDb;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,10 +22,7 @@ import java.util.List;
  */
 public class PlaceRecyclerViewAdapter extends BaseRecyclerViewAdapter {
 
-    private Context context;
     private List<PlaceBean> places = null;
-    private FinalDb db;
-    private List<SblxBean> sblxs = null;
 
     public PlaceRecyclerViewAdapter(List<PlaceBean> places) {
         this.places = places;
@@ -42,7 +32,6 @@ public class PlaceRecyclerViewAdapter extends BaseRecyclerViewAdapter {
 
         public TextView place, status;
         public Button btn;
-        //public ListView device_list;
 
         public PlaceViewHolder(final View itemView) {
             super(itemView);
@@ -70,9 +59,6 @@ public class PlaceRecyclerViewAdapter extends BaseRecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_item_layout, parent, false);
-        context = parent.getContext();
-        db = FinalDb.create(context, Constant.DB);
-        sblxs = db.findAll(SblxBean.class);
         return new PlaceViewHolder(view);
     }
 

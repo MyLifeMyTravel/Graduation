@@ -101,45 +101,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.task_detail_layout, container, false);
 
-        //init(view);
-
-        taskSign = (CardView) view.findViewById(R.id.task_sign);
-        taskSign.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
-        taskSignBtn = (Button) taskSign.findViewById(R.id.btn);
-
-        taskCommit = (CardView) view.findViewById(R.id.task_commit);
-        taskCommit.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
-        taskCommitBtn = (Button) taskCommit.findViewById(R.id.btn);
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.place);
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecycleAdapter = new PlaceRecyclerViewAdapter(places);
-        mRecycleAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                //if (isSign) {
-                Fragment fragment = new DeviceFragment();
-                pPosition = position;
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
-//                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
-                //}
-            }
-        });
-
-        //添加分割线
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        // specify an adapter (see also next example)
-        mRecyclerView.setAdapter(mRecycleAdapter);
-        
+        init(view);
 
         set();
 
@@ -156,7 +118,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         taskCommit.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
         taskCommitBtn = (Button) taskCommit.findViewById(R.id.btn);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.place);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.place_recylerview);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
