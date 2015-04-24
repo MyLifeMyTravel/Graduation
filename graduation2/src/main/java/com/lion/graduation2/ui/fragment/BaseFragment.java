@@ -1,13 +1,22 @@
-package com.lion.graduation2.ui.fragement;
+package com.lion.graduation2.ui.fragment;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
+
+import com.lion.graduation2.bean.json.PlaceBean;
+import com.lion.graduation2.bean.json.TaskBean;
+
+import java.util.List;
 
 /**
  * Created by Lion on 2015/4/16.
  */
 public class BaseFragment extends Fragment {
 
+    protected static List<TaskBean> tasks = null;
+    protected static int tPostion = 0;
+    protected static List<PlaceBean> places = null;
+    protected static int pPosition = 0;
     private OnDispalyHomeListener dispalyHomeListener;
     private OnTitleSet titleListener;
 

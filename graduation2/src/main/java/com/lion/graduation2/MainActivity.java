@@ -1,6 +1,8 @@
 package com.lion.graduation2;
 
-import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -16,24 +18,39 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.lion.graduation2.bean.json.Place;
-import com.lion.graduation2.bean.json.Task;
+import com.lion.graduation2.activity.EmergencyActivity;
+import com.lion.graduation2.activity.GuideActivity;
+import com.lion.graduation2.activity.LoginActivity;
+import com.lion.graduation2.activity.UserActivity;
+import com.lion.graduation2.activity.WebViewActivity;
+import com.lion.graduation2.bean.json.PlaceBean;
+import com.lion.graduation2.bean.json.TaskBean;
+import com.lion.graduation2.bean.json.UserBean;
 import com.lion.graduation2.bean.model.DrawerItemModel;
 import com.lion.graduation2.ui.DividerItemDecoration;
 import com.lion.graduation2.ui.adapter.DrawerRecyclerViewAdapter;
-import com.lion.graduation2.ui.fragement.BaseFragment;
-import com.lion.graduation2.ui.fragement.ContentFragement;
-import com.lion.graduation2.ui.fragement.UserFragment;
+import com.lion.graduation2.ui.fragment.BaseFragment;
+import com.lion.graduation2.ui.fragment.ContentFragment;
 import com.lion.graduation2.util.BitmapUtils;
 import com.lion.graduation2.util.Constant;
+import com.lion.graduation2.util.FileUtils;
+import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.circularImage.CircularImage;
 
+import net.tsz.afinal.FinalDb;
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity implements BaseFragment.OnDispalyHomeListener, BaseFragment.OnTitleSet {
 
+    private List<TaskBean> task;
+    private List<PlaceBean> places;
     //Toolbar，用来代替ActionBar
     private Toolbar toolbar = null;
     //抽屉菜单
@@ -59,12 +76,13 @@ public class MainActivity extends ActionBarActivity implements BaseFragment.OnDi
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private String account = null;
-
-    private List<Task> tasks = new ArrayList<>();
-    private List<Place> places = new ArrayList<>();
+    private List<TaskBean> tasks = new ArrayList<>();
+    /* final db*/
+    private FinalDb db;
+    //用户数据
+    private UserBean user = null;
     //测试数据
-    private int[] icon = {R.drawable.tasks1, R.drawable.warning3, R.drawable.technical, R.drawable.setting, R.drawable.about1};
+    private int[] icon = {R.drawable.tasks1, R.drawable.forum, R.drawable.warning3, R.drawable.technical, R.drawable.manual, R.drawable.setting, R.drawable.about1};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +90,20 @@ public class MainActivity extends ActionBarActivity implements BaseFragment.OnDi
         setContentView(R.layout.activity_main);
 
         //获取用户account
-        SharedPreferences sharedPreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
-        account = sharedPreferences.getString(Constant.Key.ACCOUNT, null);
+        db = FinalDb.create(this, Constant.DB);
+        user = db.findAll(UserBean.class).get(0);
         //初始化
         init();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initCircularImage();
+    }
+
     private void init() {
-        fragment = new ContentFragement();
+        fragment = new ContentFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragment).commit();
 
         //初始化抽屉菜单信息
@@ -146,16 +170,19 @@ public class MainActivity extends ActionBarActivity implements BaseFragment.OnDi
                 if (position == 0) {//任务界面
                     //fragment = new TaskListFragement();
                 } else if (position == 1) {
-
+                    Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                    startActivity(intent);
                 } else if (position == 2) {
-
+                    Intent intent = new Intent(MainActivity.this, EmergencyActivity.class);
+                    startActivity(intent);
                 } else if (position == 3) {
 
                 } else if (position == 4) {
-
+                    Intent intent = new Intent(MainActivity.this, GuideActivity.class);
+                    startActivity(intent);
                 }
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                //getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
                 mDrawerLayout.closeDrawer(mLeftDrawer);
                 Log.d(Constant.TAG, "NavDrawer item click.postion:" + position + ".content:" + items.get(position).getText());
             }
@@ -191,25 +218,67 @@ public class MainActivity extends ActionBarActivity implements BaseFragment.OnDi
     private void initNavDrawerHeader() {
         mNavDrawerHeader = (LinearLayout) mLeftDrawer.findViewById(R.id.navdrawer_header);
 
-        initCircularImage();
-
         mUserName = (TextView) mNavDrawerHeader.findViewById(R.id.navdrawer_user_name);
-        SharedPreferences sharepreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
-        mUserName.setText(sharepreferences.getString(Constant.Key.NAME, null));
+        mUserName.setText(user.getName());
     }
 
     /**
      * 初始话抽屉菜单显示的圆形用户头像
      */
     private void initCircularImage() {
+        final String pic_path = Constant.Path.IMAGE + user.getAccount() + Constant.PIC_SUFFIX;
         //设置抽屉菜单显示圆形头像
         mCircularImage = (CircularImage) mNavDrawerHeader.findViewById(R.id.navdrawer_user_head);
-        mCircularImage.setImageBitmap(BitmapUtils.readBitMap(this, R.drawable.wolf));
+        //如果头像未下载过，则显示问号并进行下载，否则直接显示用户头像
+        if (user.getPic_path() == null) {
+            downloadPic(pic_path);
+        } else {
+            try {
+                mCircularImage.setImageDrawable(BitmapUtils.getImage(MainActivity.this, pic_path));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         mCircularImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new UserFragment()).addToBackStack(null).commit();
-                mDrawerLayout.closeDrawer(mLeftDrawer);
+                Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+    }
+
+    private void downloadPic(final String pic_path) {
+        //判断目录是否存在，不存在则创建一个
+        if (!FileUtils.isDirExist(Constant.Path.IMAGE)) {
+            FileUtils.makeDir(Constant.Path.IMAGE);
+        }
+
+        FinalHttp fh = new FinalHttp();
+        fh.download(HttpUtils.HttpUrl.DOMAIN_URL + "/img/user/116040384.jpg", pic_path, false, new AjaxCallBack<File>() {
+            @Override
+            public void onSuccess(File file) {
+                super.onSuccess(file);
+                Log.e("afinal", "下载成功");
+                try {
+                    user.setPic_path(pic_path);
+                    mCircularImage.setImageDrawable(BitmapUtils.getImage(MainActivity.this, pic_path));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onFailure(Throwable t, String strMsg) {
+                super.onFailure(t, strMsg);
+                Log.e("afinal", "下载失败：" + strMsg);
             }
         });
     }
@@ -229,11 +298,29 @@ public class MainActivity extends ActionBarActivity implements BaseFragment.OnDi
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_login_out) {
+            login_out();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void login_out() {
+        new AlertDialog.Builder(this).setTitle("注销").setNegativeButton("是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                db.delete(user);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }).setPositiveButton("否", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     @Override
@@ -250,19 +337,12 @@ public class MainActivity extends ActionBarActivity implements BaseFragment.OnDi
     public void restoreTitle() {
     }
 
-    public List<Task> getTasks() {
+    public List<TaskBean> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
+    public void setTasks(List<TaskBean> tasks) {
         this.tasks = tasks;
     }
 
-    public List<Place> getPlaces() {
-        return places;
-    }
-
-    public void setPlaces(List<Place> places) {
-        this.places = places;
-    }
 }

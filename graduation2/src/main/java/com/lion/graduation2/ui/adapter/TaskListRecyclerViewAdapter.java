@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lion.graduation2.R;
-import com.lion.graduation2.bean.json.Task;
+import com.lion.graduation2.bean.json.TaskBean;
 
 import java.util.List;
 
@@ -19,9 +19,9 @@ import java.util.List;
 public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
 
     private static final int TYPE_WEATHER = 0;
-    private List<Task> items = null;
+    private List<TaskBean> items = null;
 
-    public TaskListRecyclerViewAdapter(List<Task> items) {
+    public TaskListRecyclerViewAdapter(List<TaskBean> items) {
         this.items = items;
     }
 
@@ -64,9 +64,9 @@ public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         TaskViewHolder holder = (TaskViewHolder) viewHolder;
-        holder.task_type.setText(items.get(i).getType());
-        holder.task_name.setText(items.get(i).getSite_name());
-        holder.task_time.setText(items.get(i).getDate());
+        holder.task_type.setText(items.get(i).getRwlx());
+        holder.task_name.setText(items.get(i).getSite().getName());
+        holder.task_time.setText(items.get(i).getDate() + " " + items.get(i).getTime());
     }
 
     @Override

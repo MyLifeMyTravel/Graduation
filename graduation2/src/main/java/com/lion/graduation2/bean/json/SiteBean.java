@@ -1,13 +1,15 @@
 package com.lion.graduation2.bean.json;
 
+import java.io.Serializable;
+
 /**
  * 变电站数据
  * Created by Lion on 2015/4/16.
  */
-public class Site {
+public class SiteBean implements Serializable {
 
     //变电站ID
-    private int _id;
+    private int id;
     //变电站编号
     private String indentifier;
     //变电站位置
@@ -25,12 +27,12 @@ public class Site {
     //变电站所在街道
     private String street;
 
-    public int get_id() {
-        return _id;
+    public int getId() {
+        return id;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getIndentifier() {
@@ -99,8 +101,8 @@ public class Site {
 
     @Override
     public String toString() {
-        return "Site{" +
-                "_id=" + _id +
+        return "SiteBean{" +
+                "id=" + id +
                 ", indentifier='" + indentifier + '\'' +
                 ", loc='" + loc + '\'' +
                 ", name='" + name + '\'' +

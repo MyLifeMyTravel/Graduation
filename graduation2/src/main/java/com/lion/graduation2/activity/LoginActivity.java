@@ -1,7 +1,6 @@
 package com.lion.graduation2.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -14,13 +13,25 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.lion.graduation2.MainActivity;
 import com.lion.graduation2.R;
-import com.lion.graduation2.bean.json.Login;
+import com.lion.graduation2.bean.json.CdlxBean;
+import com.lion.graduation2.bean.json.LoginBean;
+import com.lion.graduation2.bean.json.SblxBean;
+import com.lion.graduation2.bean.json.UserBean;
+import com.lion.graduation2.bean.json.XsbzBean;
+import com.lion.graduation2.bean.json.XsnrBean;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.NetworkUtils;
 
+import net.tsz.afinal.FinalDb;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 /**
- * 用户登录界面，打开应用会跳转至此，若account.xml存在，则直接进入系统，否则，重新登录
+ * 用户登录界面，打开应用会跳转至此，若用户存在，则直接进入系统，否则，重新登录
  * Created by Lion on 2015/3/28.
  */
 public class LoginActivity extends ActionBarActivity {
@@ -28,6 +39,7 @@ public class LoginActivity extends ActionBarActivity {
     private EditText userAccount, userPwd;
     private ImageButton login;
     private String account = null;
+    private FinalDb db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +47,12 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.login);
 
         //判断用户是否登录过，若登录过，则直接跳过登陆界面
-        SharedPreferences sharedPreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
-        account = sharedPreferences.getString(Constant.Key.ACCOUNT, null);
-        if (null == account) {
-            init();
-        } else {
+        db = FinalDb.create(this, Constant.DB);
+        if (db.findAll(UserBean.class).size() == 1) {
             start();
+        } else {
+            initData();
+            init();
         }
     }
 
@@ -88,10 +100,10 @@ public class LoginActivity extends ActionBarActivity {
                 final String result = HttpUtils.httpGet(url);
                 Gson gson = new Gson();
                 try {
-                    Login login = gson.fromJson(result, Login.class);
+                    LoginBean login = gson.fromJson(result, LoginBean.class);
                     Log.e(Constant.TAG, login.toString());
                     if (login.getFlag().trim().equals("succeed")) {
-                        saveAccount(login);
+                        saveAccount(login.getUser());
                         updateToastUI("欢迎登录，" + login.getUser().getName() + "!");
                         start();
                     } else {
@@ -127,18 +139,57 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     /**
+     * 数据至数据库
+     */
+    private void initData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InputStream is = getAssets().open("cdlx.md");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                    String line = null;
+                    int cdlx_id = 1, sblx_id = 1, xsnr_id = 1, xsbz_id = 1;
+                    while ((line = reader.readLine()) != null) {
+                        if (line.startsWith("##")) {
+                            CdlxBean cdlxBean = new CdlxBean();
+                            cdlxBean.setId(cdlx_id++);
+                            cdlxBean.setName(line.substring("##".length()));
+                            db.save(cdlxBean);
+                        } else if (line.startsWith("- ")) {
+                            SblxBean sblxBean = new SblxBean();
+                            sblxBean.setId(sblx_id++);
+                            sblxBean.setCdlx_id(cdlx_id - 1);
+                            sblxBean.setName(line.substring("- ".length()));
+                            db.save(sblxBean);
+                        } else if (line.startsWith("\t- ")) {
+                            XsnrBean xsnrBean = new XsnrBean();
+                            xsnrBean.setId(xsnr_id++);
+                            xsnrBean.setSblx_id(sblx_id - 1);
+                            xsnrBean.setNr(line.substring("\t- ".length()));
+                            db.save(xsnrBean);
+                        } else if (line.startsWith("\t\t- ")) {
+                            XsbzBean xsbzBean = new XsbzBean();
+                            xsbzBean.setId(xsbz_id++);
+                            xsbzBean.setSblx_id(sblx_id - 1);
+                            xsbzBean.setXsnr_id(xsnr_id - 1);
+                            xsbzBean.setDescription(line.substring("\t\t- ".length()));
+                            db.save(xsbzBean);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
      * 保存账户信息
      *
      * @param account
      */
-    private void saveAccount(Login account) {
-        SharedPreferences sharedPreferences = getSharedPreferences(Constant.Key.ACCOUNT, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constant.Key.ID, account.getUser().getId());
-        editor.putString(Constant.Key.ACCOUNT, account.getUser().getAccount());
-        editor.putString(Constant.Key.NAME, account.getUser().getName());
-        editor.putString(Constant.Key.PIC, account.getUser().getPic());
-        editor.putString(Constant.Key.INFO, account.getUser().getInfo());
-        editor.commit();
+    private void saveAccount(UserBean account) {
+        db.save(account);
     }
 }

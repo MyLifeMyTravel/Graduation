@@ -1,9 +1,10 @@
-package com.lion.graduation2.ui.fragement;
+package com.lion.graduation2.ui.fragment;
 
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,12 +25,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.lion.graduation2.R;
-import com.lion.graduation2.bean.json.Place;
-import com.lion.graduation2.bean.json.Task;
+import com.lion.graduation2.bean.json.PlaceBean;
+import com.lion.graduation2.bean.json.SiteBean;
+import com.lion.graduation2.bean.json.TaskBean;
 import com.lion.graduation2.ui.DividerItemDecoration;
+import com.lion.graduation2.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation2.ui.adapter.PlaceRecyclerViewAdapter;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
+import com.lion.graduation2.util.amap.MyGeocodeSearch;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -44,7 +48,6 @@ import java.util.List;
 public class TaskFragment extends BaseFragment implements AMapLocationListener {
 
     private final static float DISTANCE = 300;
-    private List<Place> places = new ArrayList<>();
 
     //签到、提交按钮
     private String[] sign = null;
@@ -52,7 +55,7 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
     private Button taskSignBtn, taskCommitBtn = null;
 
     //巡检地点ListView
-    private Task task;
+    private TaskBean task;
 
     //RecyclerView适配器
     private PlaceRecyclerViewAdapter mRecycleAdapter = null;
@@ -61,6 +64,7 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
 
     //定位管理类
     private LocationManagerProxy mLocationManagerProxy = null;
+    private LatLng sitePoint = null;
 
     private String URL = HttpUtils.HttpUrl.GET_PLACE_URL;
 
@@ -68,12 +72,21 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sign = getResources().getStringArray(R.array.sign);
-        task = (Task) getArguments().getSerializable(Constant.Key.TASK_INFO);
+        task = tasks.get(tPostion);
         //设置ActionBar的Title
-        getTitleListener().setTitle(task.getSite_name() + task.getType());
+        getTitleListener().setTitle(task.getSite().getName() + task.getRwlx());
 
         mLocationManagerProxy = LocationManagerProxy.getInstance(getActivity());
 
+        MyGeocodeSearch search = MyGeocodeSearch.getInstance(getActivity());
+        search.onQuery(task.getSite().getStreet(), task.getSite().getCity());
+        search.setOnGeocodeListener(new MyGeocodeSearch.OnGeocodeListener() {
+            @Override
+            public void onResult(LatLng point) {
+                sitePoint = point;
+            }
+        });
+        places = new ArrayList<>();
         getPlaceList();
     }
 
@@ -158,16 +171,18 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
          */
         if (aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
             LatLng latLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            float distance = AMapUtils.calculateLineDistance(latLng, new LatLng(29.907077, 121.644459));
+            //此处还需获取巡检目的地的坐标
+            float distance = AMapUtils.calculateLineDistance(latLng, sitePoint);
             if (distance < DISTANCE) {
-                Toast.makeText(getActivity(), distance + "", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), distance + "", Toast.LENGTH_LONG).show();
                 //设置CardView背景色
                 //taskSign.setCardBackgroundColor(getResources().getColor(R.color.slategray));
                 //taskSignBtn.setText(sign[2]);
                 taskSign.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "签到成功，现在可以开始巡检啦！", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(getActivity(), getResources().getString(R.string.tips_distance_too_long), Toast.LENGTH_LONG).show();
+                String distance_too_long = getResources().getString(R.string.tips_distance_too_long);
+                Toast.makeText(getActivity(), String.format(distance_too_long, distance), Toast.LENGTH_LONG).show();
                 taskSignBtn.setText(sign[0]);
             }
         } else {
@@ -203,18 +218,23 @@ public class TaskFragment extends BaseFragment implements AMapLocationListener {
     }
 
     private void getPlaceList() {
+        if (places == null) {
+            places = new ArrayList<>();
+        } else {
+            places.clear();
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String result = HttpUtils.httpGet(String.format(URL, task.getSite_id()));
+                String result = HttpUtils.httpGet(String.format(URL, task.getSite().getId()));
                 Gson gson = new Gson();
                 try {
-                    Type listType = new TypeToken<LinkedList<Place>>() {
+                    Type listType = new TypeToken<LinkedList<PlaceBean>>() {
                     }.getType();
-                    LinkedList<Place> items = gson.fromJson(result, listType);
+                    LinkedList<PlaceBean> items = gson.fromJson(result, listType);
                     for (Iterator iterator = items.iterator(); iterator.hasNext(); ) {
-                        Place place = (Place) iterator.next();
-                        Log.e(Constant.TAG, task.toString());
+                        PlaceBean place = (PlaceBean) iterator.next();
+                        Log.e(Constant.TAG, place.toString());
                         places.add(place);
                     }
                     //只有主线程才能刷新UI

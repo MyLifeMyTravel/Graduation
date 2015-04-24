@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,6 +21,13 @@ public class BitmapUtils {
     public static Drawable getAssetImage(Context context, String filename) throws IOException {
         AssetManager assets = context.getResources().getAssets();
         InputStream buffer = new BufferedInputStream((assets.open("drawable/" + filename)));
+        Bitmap bitmap = BitmapFactory.decodeStream(buffer);
+        return new BitmapDrawable(context.getResources(), bitmap);
+    }
+
+    public static Drawable getImage(Context context, String path) throws IOException {
+        AssetManager assets = context.getResources().getAssets();
+        InputStream buffer = new BufferedInputStream(new FileInputStream(path));
         Bitmap bitmap = BitmapFactory.decodeStream(buffer);
         return new BitmapDrawable(context.getResources(), bitmap);
     }

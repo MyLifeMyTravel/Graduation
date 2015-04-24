@@ -21,7 +21,7 @@ public class HttpUtils {
      */
     public interface HttpParams {
         String ACCOUNT = "account";
-        String PWD = "pwd";
+        String PWD = "password";
     }
 
     /**
@@ -31,8 +31,8 @@ public class HttpUtils {
         //虚拟机
         //String DOMAIN_URL = "http://192.168.191.1/php/";
         //实体机
-        String DOMAIN_URL = "http://192.168.56.1/php/";
-        String LOGIN_URL = DOMAIN_URL + "login.php?account=%s&pwd=%s";
+        String DOMAIN_URL = "http://www.littlejie.com/php/";
+        String LOGIN_URL = DOMAIN_URL + "login.php?account=%s&password=%s";
         String GET_TASK_URL = DOMAIN_URL + "getTask.php?account=%s";
         String GET_PLACE_URL = DOMAIN_URL + "getPlaceList.php?site_id=%s";
         String GET_COUNT_URL = DOMAIN_URL + "getTaskCount.php?account=%s";

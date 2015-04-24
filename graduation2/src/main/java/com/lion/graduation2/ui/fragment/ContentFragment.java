@@ -1,4 +1,4 @@
-package com.lion.graduation2.ui.fragement;
+package com.lion.graduation2.ui.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,7 +25,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.lion.graduation2.MainActivity;
 import com.lion.graduation2.R;
-import com.lion.graduation2.bean.json.Task;
+import com.lion.graduation2.bean.json.TaskBean;
+import com.lion.graduation2.bean.json.UserBean;
 import com.lion.graduation2.bean.model.WeatherModel;
 import com.lion.graduation2.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation2.ui.adapter.TaskListRecyclerViewAdapter;
@@ -33,7 +34,10 @@ import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.TimeUtils;
 
+import net.tsz.afinal.FinalDb;
+
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,9 +46,8 @@ import java.util.List;
  * 开启应用显示的界面
  * Created by Lion on 2015/3/13.
  */
-public class ContentFragement extends BaseFragment {
+public class ContentFragment extends BaseFragment {
 
-    private List<Task> tasks = null;
     private WeatherModel weatherModel = null;
 
     //任务提示
@@ -65,18 +68,22 @@ public class ContentFragement extends BaseFragment {
 
     //URL
     private String url = HttpUtils.HttpUrl.GET_TASK_URL;
-    private String account, name;
+    //FinalDb
+    private FinalDb db;
+    //UserBean
+    private UserBean user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weatherModel = new WeatherModel();
         //获取存储的用户名、帐号
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constant.Key.ACCOUNT, getActivity().MODE_PRIVATE);
-        account = sharedPreferences.getString(Constant.Key.ACCOUNT, null);
-        name = sharedPreferences.getString(Constant.Key.NAME, null);
+        db = FinalDb.create(getActivity(), Constant.DB);
+        user = db.findAll(UserBean.class).get(0);
 
-        tasks = ((MainActivity) getActivity()).getTasks();
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
     }
 
     @Override
@@ -101,9 +108,10 @@ public class ContentFragement extends BaseFragment {
             public void onItemClick(View v, int position) {
                 //((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 Fragment fragment = new TaskFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
-                fragment.setArguments(bundle);
+                tPostion = position;
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
+//                fragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
             }
         });
@@ -129,29 +137,38 @@ public class ContentFragement extends BaseFragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String result = HttpUtils.httpGet(String.format(url, account));
+                String result = HttpUtils.httpGet(String.format(url, user.getAccount()));
                 Gson gson = new Gson();
                 try {
-                    Type listType = new TypeToken<LinkedList<Task>>() {
+                    Type listType = new TypeToken<LinkedList<TaskBean>>() {
                     }.getType();
-                    LinkedList<Task> linkedTasks = gson.fromJson(result, listType);
-                    for (Iterator iterator = linkedTasks.iterator(); iterator.hasNext(); ) {
-                        Task task = (Task) iterator.next();
-                        Log.e(Constant.TAG, task.toString());
-                        tasks.add(task);
+                    LinkedList<TaskBean> linkedTasks = gson.fromJson(result, listType);
+                    if (linkedTasks != null) {
+                        for (Iterator iterator = linkedTasks.iterator(); iterator.hasNext(); ) {
+                            TaskBean task = (TaskBean) iterator.next();
+                            Log.e(Constant.TAG, task.toString());
+                            tasks.add(task);
+                        }
                     }
                     //只有主线程才能刷新UI
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             String tip = getResources().getString(R.string.task_tip);
-                            task_tip.setText(String.format(tip, name, tasks.size()));
+                            task_tip.setText(String.format(tip, user.getName(), tasks.size()));
                             mAdapter.notifyDataSetChanged();
                         }
                     });
                     Log.e(Constant.TAG, tasks.toString());
                 } catch (JsonSyntaxException jsonSyntax) {
                     jsonSyntax.printStackTrace();
+                    //只有主线程才能刷新UI
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "JSON数据解析失败，请重试", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         }).start();
@@ -213,7 +230,7 @@ public class ContentFragement extends BaseFragment {
             } else if (weather.contains("雪")) {
                 status = R.drawable.cloud_snow;
             }
-            return R.drawable.cloud_clear;
+            return status;
         }
     };
 }

@@ -14,4 +14,15 @@ public class TimeUtils {
         timeStr = time.hour + ":" + time.minute;
         return timeStr;
     }
+
+    /**
+     * 获取当前时间信息，格式yyyy-MM-dd hh:mm:ss
+     *
+     * @return
+     */
+    public static String getCurrentDate() {
+        Time time = new Time();
+        time.setToNow();
+        return time.format("%Y-%m-%d %H:%M:%S");
+    }
 }

@@ -90,6 +90,9 @@
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="AMap_Services_V2.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="afinal-0.3.32-bin" level="project" />
+    <orderEntry type="library" exported="" name="afinal_0.5.1_bin" level="project" />
+    <orderEntry type="library" exported="" name="achartengine-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="Android_Location_V1.3.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
