@@ -1,0 +1,4 @@
+巡视周期: patrol_cycle.txt
+巡检器具: patrol_tool.txt
+人员要求: requires.txt
+危险点分析及控制措施: risks_measure.txt
