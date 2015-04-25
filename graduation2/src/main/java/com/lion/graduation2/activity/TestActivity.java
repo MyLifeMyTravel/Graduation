@@ -15,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lion.graduation2.R;
+import com.lion.graduation2.bean.json.XsnrBean;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
 
+import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -34,9 +36,12 @@ import java.util.Date;
 */
 public class TestActivity extends ActionBarActivity {
 
+    private FinalDb db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        File file = new File(Constant.Path.ROOT+"");
+        db = FinalDb.create(TestActivity.this,Constant.DB);
+        Log.d(Constant.TAG,db.findById(7, XsnrBean.class).toString());
     }
 }

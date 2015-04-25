@@ -30,6 +30,8 @@ public class UserBean {
     private String position;
     //入职时间
     private String joinTime;
+    //设备号
+    private String deviceId;
 
     public int getId() {
         return id;
@@ -119,6 +121,14 @@ public class UserBean {
         this.joinTime = joinTime;
     }
 
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
     @Override
     public String toString() {
         return "UserBean{" +
@@ -133,6 +143,7 @@ public class UserBean {
                 ", dept='" + dept + '\'' +
                 ", position='" + position + '\'' +
                 ", joinTime='" + joinTime + '\'' +
+                ", deviceId='" + deviceId + '\'' +
                 '}';
     }
 }

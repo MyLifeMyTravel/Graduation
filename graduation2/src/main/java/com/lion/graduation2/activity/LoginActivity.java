@@ -1,8 +1,13 @@
 package com.lion.graduation2.activity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +29,9 @@ import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.NetworkUtils;
 
 import net.tsz.afinal.FinalDb;
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,9 +44,15 @@ import java.io.InputStreamReader;
  */
 public class LoginActivity extends ActionBarActivity {
 
+    //用户名、密码输入框
     private EditText userAccount, userPwd;
+    //登录按钮
     private ImageButton login;
+    //用户帐号
     private String account = null;
+    //用户姓名
+    private String name = null;
+    //FinalDb对象，管理数据库
     private FinalDb db;
 
     @Override
@@ -46,12 +60,23 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        //判断用户是否登录过，若登录过，则直接跳过登陆界面
         db = FinalDb.create(this, Constant.DB);
-        if (db.findAll(UserBean.class).size() == 1) {
+
+        //判断是否初次使用软件，如果是，则初始化导入相应数据到数据库
+        SharedPreferences sharedPreferences = getSharedPreferences("init", Context.MODE_PRIVATE);
+        boolean isFirst = sharedPreferences.getBoolean("isFirst", true);
+        if (isFirst) {
+            isFirst = false;
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isFirst", isFirst);
+            editor.commit();
+            initData();
+        }
+
+        //判断用户是否登录过，若登录过，则直接跳过登陆界面
+        if (db.findAll(UserBean.class).size() != 0) {
             start();
         } else {
-            initData();
             init();
         }
     }
@@ -98,14 +123,34 @@ public class LoginActivity extends ActionBarActivity {
                 //后期完成后需要把HttpGet请求改成HttpPost
                 String url = String.format(HttpUtils.HttpUrl.LOGIN_URL, account, pwd);
                 final String result = HttpUtils.httpGet(url);
+                Log.d(Constant.TAG, "登录JSON数据：" + result);
                 Gson gson = new Gson();
                 try {
-                    LoginBean login = gson.fromJson(result, LoginBean.class);
+                    final LoginBean login = gson.fromJson(result, LoginBean.class);
                     Log.e(Constant.TAG, login.toString());
                     if (login.getFlag().trim().equals("succeed")) {
-                        saveAccount(login.getUser());
-                        updateToastUI("欢迎登录，" + login.getUser().getName() + "!");
-                        start();
+                        name = login.getUser().getName();
+                        if (login.getUser().getDeviceId() != null && !login.getUser().getDeviceId().equals("")) {
+                            if (login.getUser().getDeviceId().equals(getDeviceID())) {
+                                saveAccount(login.getUser());
+                                start();
+                            } else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(LoginActivity.this, "尊敬的" + name + ",您的帐号已绑定了设备：" + login.getUser().getDeviceId() + "。请联系管理员解绑后重新登录", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    saveAccount(login.getUser());
+                                    bindPhone();
+                                }
+                            });
+                        }
                     } else {
                         updateToastUI("用户名或密码错误，请重试！");
                     }
@@ -115,6 +160,62 @@ public class LoginActivity extends ActionBarActivity {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 初次使用绑定设备ID，如手机丢失，则要去管理员那边解绑
+     */
+    private void bindPhone() {
+        new AlertDialog.Builder(LoginActivity.this).setTitle("正在绑定设备号，是否继续？").setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(LoginActivity.this, "取消", Toast.LENGTH_SHORT).show();
+            }
+        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(LoginActivity.this, "确定", Toast.LENGTH_SHORT).show();
+                String deviceID = getDeviceID();
+                FinalHttp fh = new FinalHttp();
+                AjaxParams params = new AjaxParams();
+                params.put(Constant.Key.ACCOUNT, userAccount.getText().toString().trim());
+                params.put("device_id", deviceID);
+                fh.post(HttpUtils.HttpUrl.POST_UPDATE_DEVICEID_URL, params, new AjaxCallBack<Object>() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        super.onSuccess(o);
+                        String strMsg = (String) o;
+                        Log.d(Constant.TAG, "绑定设备ID成功：" + strMsg);
+                        updateToastUI("欢迎登录，" + name + "!");
+                        start();
+                    }
+
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        Log.d(Constant.TAG, "开始上传device_id");
+                    }
+
+                    @Override
+                    public void onLoading(long count, long current) {
+                        super.onLoading(count, current);
+                        Log.d(Constant.TAG, "正在上传device_id");
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t, String strMsg) {
+                        super.onFailure(t, strMsg);
+                        Log.d(Constant.TAG, "上传失败："+strMsg);
+                    }
+                });
+            }
+        }).show();
+    }
+
+    private String getDeviceID() {
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        Log.d(Constant.TAG, "设备ID:" + manager.getDeviceId());
+        return manager.getDeviceId();
     }
 
     /**
@@ -139,7 +240,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     /**
-     * 数据至数据库
+     * 导入数据至数据库
      */
     private void initData() {
         new Thread(new Runnable() {

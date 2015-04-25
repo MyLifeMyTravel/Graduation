@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -38,6 +39,10 @@ import com.lion.graduation2.util.amap.MyGeocodeSearch;
 
 import net.tsz.afinal.FinalDb;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,13 +55,16 @@ import java.util.List;
  */
 public class TaskFragment extends BaseTourFragment implements AMapLocationListener {
 
-    private final static float DISTANCE = 300;
+    private final static float DISTANCE = 2000;
     private boolean isSign = false;
 
     //签到、提交按钮
     private String[] sign = null;
     private CardView taskSign, taskCommit = null;
     private Button taskSignBtn, taskCommitBtn = null;
+    //特殊巡视提示
+    private CardView tsxsCard = null;
+    private TextView tsxs, tsxsTitle = null;
 
     //巡检地点ListView
     private TaskBean task;
@@ -118,6 +126,11 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         taskCommit.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
         taskCommitBtn = (Button) taskCommit.findViewById(R.id.btn);
 
+        //特殊巡视
+        tsxsCard = (CardView) view.findViewById(R.id.tsxs);
+        tsxs = (TextView) tsxsCard.findViewById(R.id.tsxs_require);
+        tsxsTitle = (TextView) tsxsCard.findViewById(R.id.tsxs_title);
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.place_recylerview);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -131,14 +144,14 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         mRecycleAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                //if (isSign) {
-                Fragment fragment = new DeviceFragment();
-                pPosition = position;
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(Constant.Key.TASK_INFO, tasks.get(position));
-//                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
-                //}
+
+                if (isSign) {
+                    Fragment fragment = new DeviceFragment();
+                    pPosition = position;
+                    getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.content_frame, fragment).commit();
+                } else {
+                    Toast.makeText(getActivity(), "请先签到后在进行巡检！", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -153,7 +166,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         taskSignBtn.setText(sign[0]);
         taskSignBtn.setBackgroundColor(Color.TRANSPARENT);
 
-        taskCommitBtn.setText(getResources().getString(R.string.task_commit));
+        taskCommitBtn.setText(getResources().getString(R.string.commit));
         taskCommitBtn.setBackgroundColor(Color.TRANSPARENT);
 
         //set click listener
@@ -173,9 +186,64 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         taskCommitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "正在提交", Toast.LENGTH_LONG).show();
+                boolean isFinish = true;
+                for (int i = 0; i < places.size(); i++) {
+                    if (!places.get(i).isStatus()) {
+                        isFinish = false;
+                    }
+                }
+                if (isFinish) {
+                    Toast.makeText(getActivity(), "正在提交", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "您尚有未完成的巡检场地，请继续巡检！", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+        setTsxsContent();
+    }
+
+    /**
+     * 设置特殊巡视TextView的内容
+     */
+    private void setTsxsContent() {
+        String content = getTsxsContent();
+        if (content != null) {
+            tsxsTitle.setText(task.getRwlx() + "作业要求");
+            tsxsCard.setVisibility(View.VISIBLE);
+            tsxs.setText(getTsxsContent());
+        }
+    }
+
+    /**
+     * 获取特殊巡视的内容
+     *
+     * @return
+     */
+    private String getTsxsContent() {
+        String content = null;
+        try {
+            InputStream is = getActivity().getAssets().open("tsxs.md");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line = null;
+            StringBuffer stringBuffer = null;
+            int count = 1;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(task.getRwlx())) {
+                    stringBuffer = new StringBuffer();
+                } else if (line.startsWith("- ") && stringBuffer != null) {
+                    stringBuffer.append(count + "、" + line.substring("- ".length()) + "\n");
+                    count++;
+                } else if (line.equals("") && stringBuffer != null) {
+                    content = stringBuffer.toString();
+                    content = content.substring(0, content.length() - 1);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content;
     }
 
     @Override
@@ -270,6 +338,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
                 list.add(sblxs.get(i));
             }
         }
+        Log.d(Constant.TAG, list.hashCode() + "");
         return list;
     }
 }

@@ -70,9 +70,9 @@ public class XsbzRecyclerViewAdapter extends BaseRecyclerViewAdapter {
         XsbzViewHolder holder = (XsbzViewHolder) viewHolder;
         holder.xsbz.setText(xsbzBeans.get(position).getDescription());
         if (xsbzBeans.get(position).getNote() == null) {
-            holder.noteText.setText("无");
+            holder.noteText.setText("备注:无");
         } else {
-            holder.noteText.setText(xsbzBeans.get(position).getNote());
+            holder.noteText.setText("备注:" + xsbzBeans.get(position).getNote());
         }
     }
 

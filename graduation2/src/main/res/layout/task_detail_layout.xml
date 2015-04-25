@@ -8,21 +8,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:id="@+id/tsxs"
+        layout="@layout/tsxs_layout"/>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:id="@+id/task_sign"
-        layout="@layout/task_sign" />
+        layout="@layout/task_sign"/>
 
     <android.support.v7.widget.RecyclerView
         android:padding="15dp"
         android:layout_weight="1000"
         android:id="@+id/place_recylerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/task_commit"
-        layout="@layout/task_sign" />
+        layout="@layout/task_sign"/>
 
 </LinearLayout>

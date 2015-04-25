@@ -88,12 +88,6 @@ public class XsbzFragment extends BaseTourFragment {
 
         // specify an adapter (see also next example)
         mAdapter = new XsbzRecyclerViewAdapter(xsbzBeans);
-        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-
-            }
-        });
         //添加分割线
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setAdapter(mAdapter);
@@ -111,35 +105,40 @@ public class XsbzFragment extends BaseTourFragment {
     }
 
     private void postData() {
-        String json = history2Json(initHistoryData());
-        Log.d(Constant.TAG, "history:" + json);
-        FinalHttp fh = new FinalHttp();
-        AjaxParams params = new AjaxParams();
-        params.put("history", json);
-        fh.post(HttpUtils.HttpUrl.POST_HISTORY_URL, params, new AjaxCallBack<Object>() {
-            @Override
-            public void onLoading(long count, long current) {
-                super.onLoading(count, current);
-                dialog = ProgressDialog.show(getActivity(), null, "正在提交巡检结果，请稍后...");
-            }
+        HistoryBean history = initHistoryData();
+        if (history == null) {
+            getActivity().getSupportFragmentManager().popBackStack();
+            return;
+        } else {
+            String json = history2Json(history);
+            Log.d(Constant.TAG, "history:" + json);
+            FinalHttp fh = new FinalHttp();
+            AjaxParams params = new AjaxParams();
+            params.put("history", json);
+            fh.post(HttpUtils.HttpUrl.POST_HISTORY_URL, params, new AjaxCallBack<Object>() {
+                @Override
+                public void onLoading(long count, long current) {
+                    super.onLoading(count, current);
+                    dialog = ProgressDialog.show(getActivity(), null, "正在提交巡检结果，请稍后...");
+                }
 
-            @Override
-            public void onSuccess(Object o) {
-                super.onSuccess(o);
-                dialog.dismiss();
-                String result = (String) o;
-                Log.d(Constant.TAG,"巡检结果提交："+result);
-                getActivity().getSupportFragmentManager().popBackStack();
-                Toast.makeText(getActivity(), "提交巡检结果成功", Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onSuccess(Object o) {
+                    super.onSuccess(o);
+                    dialog.dismiss();
+                    String result = (String) o;
+                    Log.d(Constant.TAG, "巡检结果提交：" + result);
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    Toast.makeText(getActivity(), "提交巡检结果成功", Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void onFailure(Throwable t, String strMsg) {
-                super.onFailure(t, strMsg);
-                Toast.makeText(getActivity(), "提交失败，请重试", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Toast.makeText(getActivity(), json, Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Throwable t, String strMsg) {
+                    super.onFailure(t, strMsg);
+                    Toast.makeText(getActivity(), "提交失败，请重试", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private HistoryBean initHistoryData() {
@@ -158,7 +157,12 @@ public class XsbzFragment extends BaseTourFragment {
                 problems.add(problem);
             }
         }
-        historyBean.setProblems(problems);
+        //当没有问题时，返回null，表示不需要提交数据
+        if (problems.size() == 0) {
+            return null;
+        } else {
+            historyBean.setProblems(problems);
+        }
         return historyBean;
     }
 

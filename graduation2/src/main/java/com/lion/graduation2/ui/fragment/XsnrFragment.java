@@ -60,6 +60,8 @@ public class XsnrFragment extends BaseTourFragment {
                 new AlertDialog.Builder(getActivity()).setTitle("确认已经完成巡检嘛？").setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        List<SblxBean> sblxBeans = places.get(pPosition).getSblxs();
+                        SblxBean sblxBean = sblxBeans.get(dPosition);
                         places.get(pPosition).getSblxs().get(dPosition).setStatus(true);
                         getActivity().getSupportFragmentManager().popBackStack();
                         dialog.dismiss();

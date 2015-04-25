@@ -20,21 +20,27 @@ public class BudgetPieChart {
 
     /**
      * 执行获取Intent，这里需要申明<activity android:name="org.achartengine.GraphicalActivity"></activity>
+     *
      * @param context
      * @param title
      * @param items
      * @param values
      * @return
      */
-    public Intent execute(Context context, String title, String[] items, double[] values) {
-        DefaultRenderer renderer = buildCategoryRenderer(colors);
-        renderer.setZoomButtonsVisible(true);
-        renderer.setZoomEnabled(true);
-        renderer.setChartTitleTextSize(50);
-        Intent intent = ChartFactory.getPieChartIntent(context, buildCategoryDataset(title, items, values), renderer, "Budget");
-//        View view = ChartFactory.getPieChartView(context, buildCategoryDataset("Project budget", item, values), renderer);
-//        view.setBackgroundColor(Color.BLACK);
-        return intent;
+    public View execute(Context context, String title, String[] items, double[] values) {
+        DefaultRenderer renderer = buildCategoryRenderer(getColors(items.length));
+        renderer.setBackgroundColor(Color.GRAY);
+        renderer.setApplyBackgroundColor(true);
+        renderer.setLabelsTextSize(20);
+        renderer.setChartTitle(title);
+        renderer.setChartTitleTextSize(30);
+        renderer.setLegendTextSize(30);
+        renderer.setLegendHeight(100);
+        //renderer.setZoomButtonsVisible(true);
+        //renderer.setZoomEnabled(true);
+        //        Intent intent = ChartFactory.getPieChartIntent(context, buildCategoryDataset(title, items, values), renderer, "Budget");
+        View view = ChartFactory.getPieChartView(context, buildCategoryDataset(title, items, values), renderer);
+        return view;
     }
 
     protected DefaultRenderer buildCategoryRenderer(int[] colors) {
@@ -64,5 +70,13 @@ public class BudgetPieChart {
             series.add(item[i], values[i]);
         }
         return series;
+    }
+
+    private int[] getColors(int length) {
+        int[] tmp_colors = new int[length];
+        for (int i = 0; i < length; i++) {
+            tmp_colors[i] = colors[i];
+        }
+        return tmp_colors;
     }
 }
