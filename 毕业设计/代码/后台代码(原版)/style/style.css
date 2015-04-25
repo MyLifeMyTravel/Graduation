@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{ margin:0px; padding:0px; font-size:12px; background:url(../images/bg.jpg) repeat-x;}
+*{ margin:0px; padding:0px;}
+a{ text-decoration:none; color:#000;}
+a img { border:none;}
+
+/*登陆界面css代码 */
+.main_content{ width:800px; height:198px; margin:0 auto;}
+.top{ width:618px; height:198px;}
+.logo{ width:434px; height:39px; margin:0 auto;}
+.content{ width:453px; height:272px; background:url(../images/login_bg.jpg) no-repeat; margin:0 auto;}
+
+.content form{ padding-top:108px; padding-left:86px;}
+.content form label{ display:block; float:left; width:50px; text-align:right;}
+
