@@ -18,9 +18,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lion.graduation2.activity.AboutActivity;
 import com.lion.graduation2.activity.EmergencyActivity;
 import com.lion.graduation2.activity.GuideActivity;
 import com.lion.graduation2.activity.LoginActivity;
+import com.lion.graduation2.activity.SettingActivity;
+import com.lion.graduation2.activity.SupportActivity;
 import com.lion.graduation2.activity.UserActivity;
 import com.lion.graduation2.activity.WebViewActivity;
 import com.lion.graduation2.bean.json.PlaceBean;
@@ -168,7 +171,8 @@ public class MainActivity extends ActionBarActivity implements BaseTourFragment.
             @Override
             public void onItemClick(View v, int position) {
                 if (position == 0) {//任务界面
-                    //fragment = new TaskListFragement();
+                    fragment = new ContentFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
                 } else if (position == 1) {
                     Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
                     startActivity(intent);
@@ -176,9 +180,16 @@ public class MainActivity extends ActionBarActivity implements BaseTourFragment.
                     Intent intent = new Intent(MainActivity.this, EmergencyActivity.class);
                     startActivity(intent);
                 } else if (position == 3) {
-
+                    Intent intent = new Intent(MainActivity.this, SupportActivity.class);
+                    startActivity(intent);
                 } else if (position == 4) {
                     Intent intent = new Intent(MainActivity.this, GuideActivity.class);
+                    startActivity(intent);
+                } else if (position == 5) {
+                    Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                    startActivity(intent);
+                } else if (position == 6) {
+                    Intent intent = new Intent(MainActivity.this, AboutActivity.class);
                     startActivity(intent);
                 }
 
