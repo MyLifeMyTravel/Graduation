@@ -26,6 +26,7 @@ import com.lion.graduation2.activity.SettingActivity;
 import com.lion.graduation2.activity.SupportActivity;
 import com.lion.graduation2.activity.UserActivity;
 import com.lion.graduation2.activity.WebViewActivity;
+import com.lion.graduation2.activity.nav.SimpleGPSNaviActivity;
 import com.lion.graduation2.bean.json.PlaceBean;
 import com.lion.graduation2.bean.json.TaskBean;
 import com.lion.graduation2.bean.json.UserBean;
@@ -38,6 +39,7 @@ import com.lion.graduation2.util.BitmapUtils;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.FileUtils;
 import com.lion.graduation2.util.HttpUtils;
+import com.lion.graduation2.util.TTSController;
 import com.lion.graduation2.util.circularImage.CircularImage;
 
 import net.tsz.afinal.FinalDb;
@@ -312,6 +314,10 @@ public class MainActivity extends ActionBarActivity implements BaseTourFragment.
         if (id == R.id.action_login_out) {
             login_out();
             return true;
+        } else if (id == R.id.rich_scan) {
+            Intent gpsNaviIntent = new Intent(MainActivity.this, SimpleGPSNaviActivity.class);
+            gpsNaviIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(gpsNaviIntent);
         }
 
         return super.onOptionsItemSelected(item);

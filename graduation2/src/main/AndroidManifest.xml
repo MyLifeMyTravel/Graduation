@@ -31,6 +31,7 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
     <!-- 允许程序读取或写入系统设置 -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -82,6 +83,11 @@
         <activity android:name=".activity.PieChartActivity"></activity>
         <!-- 图表 -->
         <activity android:name="org.achartengine.GraphicalActivity"></activity>
+
+        <!-- 导航 -->
+        <activity android:name=".activity.nav.SimpleGPSNaviActivity"></activity>
+        <activity android:name=".activity.nav.SimpleNaviActivity"></activity>
+        <activity android:name=".activity.nav.SimpleNaviRouteActivity"></activity>
     </application>
 
 </manifest>
