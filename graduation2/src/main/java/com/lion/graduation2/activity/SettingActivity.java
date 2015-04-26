@@ -8,9 +8,9 @@ import android.view.MenuItem;
 import com.lion.graduation2.R;
 
 /**
- * Created by Lion on 2015/4/20.
+ * Created by Lion on 2015/4/26.
  */
-public class SupportActivity extends ActionBarActivity {
+public class SettingActivity extends ActionBarActivity {
 
     private Toolbar toolbar;
 
