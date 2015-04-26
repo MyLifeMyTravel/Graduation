@@ -235,18 +235,21 @@ public class ContentFragment extends BaseTourFragment {
 
     private void setAlarmClock() {
         for (int i = 0; i < tasks.size(); i++) {
-            Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
             String time = tasks.get(i).getTime();
-            Log.d(Constant.TAG,"巡检时间："+ time);
-            String[] t = time.split(":");
-            int hour = Integer.parseInt(t[0]);
-            int minute = Integer.parseInt(t[1]);
-            Log.d(Constant.TAG,"时间:"+hour+" 分钟:"+minute);
-            intent.putExtra(AlarmClock.EXTRA_HOUR, hour);
-            intent.putExtra(AlarmClock.EXTRA_MINUTES, minute);
-            intent.putExtra(AlarmClock.EXTRA_MESSAGE, tasks.get(i).getDescription());
-            intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
-            startActivity(intent);
+            //当时间未超过时，设置闹钟
+            if (TimeUtils.getMinutes(time) > TimeUtils.getMinutes(TimeUtils.getTime())) {
+                Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+                Log.d(Constant.TAG, "巡检时间：" + time);
+                String[] t = time.split(":");
+                int hour = Integer.parseInt(t[0]);
+                int minute = Integer.parseInt(t[1]);
+                Log.d(Constant.TAG, "时间:" + hour + " 分钟:" + minute);
+                intent.putExtra(AlarmClock.EXTRA_HOUR, hour);
+                intent.putExtra(AlarmClock.EXTRA_MINUTES, minute);
+                intent.putExtra(AlarmClock.EXTRA_MESSAGE, tasks.get(i).getDescription());
+                intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+                startActivity(intent);
+            }
         }
     }
 }
