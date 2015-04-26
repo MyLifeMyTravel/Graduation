@@ -1,6 +1,8 @@
 package com.lion.graduation2.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.AlarmClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -153,6 +155,7 @@ public class ContentFragment extends BaseTourFragment {
                             String tip = getResources().getString(R.string.task_tip);
                             task_tip.setText(String.format(tip, user.getName(), tasks.size()));
                             mAdapter.notifyDataSetChanged();
+                            setAlarmClock();
                         }
                     });
                     Log.e(Constant.TAG, tasks.toString());
@@ -229,4 +232,21 @@ public class ContentFragment extends BaseTourFragment {
             return status;
         }
     };
+
+    private void setAlarmClock() {
+        for (int i = 0; i < tasks.size(); i++) {
+            Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+            String time = tasks.get(i).getTime();
+            Log.d(Constant.TAG,"巡检时间："+ time);
+            String[] t = time.split(":");
+            int hour = Integer.parseInt(t[0]);
+            int minute = Integer.parseInt(t[1]);
+            Log.d(Constant.TAG,"时间:"+hour+" 分钟:"+minute);
+            intent.putExtra(AlarmClock.EXTRA_HOUR, hour);
+            intent.putExtra(AlarmClock.EXTRA_MINUTES, minute);
+            intent.putExtra(AlarmClock.EXTRA_MESSAGE, tasks.get(i).getDescription());
+            intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+            startActivity(intent);
+        }
+    }
 }

@@ -121,6 +121,9 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         taskSign = (CardView) view.findViewById(R.id.task_sign);
         taskSign.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
         taskSignBtn = (Button) taskSign.findViewById(R.id.btn);
+        if(isSign) {
+            taskSign.setVisibility(View.GONE);
+        }
 
         taskCommit = (CardView) view.findViewById(R.id.task_commit);
         taskCommit.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
@@ -193,6 +196,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
                     }
                 }
                 if (isFinish) {
+                    getActivity().getSupportFragmentManager().popBackStack();
                     Toast.makeText(getActivity(), "正在提交", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getActivity(), "您尚有未完成的巡检场地，请继续巡检！", Toast.LENGTH_SHORT).show();
