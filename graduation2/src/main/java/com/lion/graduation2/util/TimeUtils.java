@@ -7,6 +7,13 @@ import android.text.format.Time;
  */
 public class TimeUtils {
 
+    public static int getMinutes(String time) {
+        int minutes = 0;
+        String[] t = time.split(":");
+        minutes = Integer.parseInt(t[0]) * 60 + Integer.parseInt(t[1]);
+        return minutes;
+    }
+
     public static String getTime() {
         String timeStr = null;
         Time time = new Time();
