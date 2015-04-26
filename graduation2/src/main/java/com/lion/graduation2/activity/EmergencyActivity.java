@@ -61,8 +61,7 @@ public class EmergencyActivity extends BaseCameraActivity {
             @Override
             public void onClick(View v) {
                 //封装一个拨打电话的intent，并且将电话号码包装成一个Uri对象传入
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + PHONE));
-                startActivity(intent);
+                dail();
             }
         });
     }
@@ -124,6 +123,12 @@ public class EmergencyActivity extends BaseCameraActivity {
                             Log.d("afinal", "上传图片成功：" + strMsg);
                             if (strMsg.equals("succeed")) {
                                 Toast.makeText(EmergencyActivity.this, "上传成功！", Toast.LENGTH_SHORT).show();
+                                new AlertDialog.Builder(EmergencyActivity.this).setTitle("图片上传成功，是否通知中心？").setNegativeButton("否", null).setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dail();
+                                    }
+                                }).show();
                             } else {
                                 Toast.makeText(EmergencyActivity.this, "上传失败！", Toast.LENGTH_SHORT).show();
                             }
@@ -153,6 +158,11 @@ public class EmergencyActivity extends BaseCameraActivity {
                     break;
             }
         }
+    }
+
+    private void dail() {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + PHONE));
+        startActivity(intent);
     }
 
 }
