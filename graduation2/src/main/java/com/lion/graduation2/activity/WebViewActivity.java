@@ -32,7 +32,7 @@ public class WebViewActivity extends ActionBarActivity implements View.OnClickLi
     /* ToolBar Title */
     private static final String TITLE = "北极星电力论坛";
     /* 当后退到顶部时的提示 */
-    private static final String BACK = "已经是最前一页了,不能再后退了";
+    private static final String BACK = "已经是最前一页了,如需退出请按左上角的返回按钮";
     /* 当前进到顶部时的提示 */
     private static final String FORWARD = "已经是最后一页了,不能再前进了";
     /* 加载时的提示 */
