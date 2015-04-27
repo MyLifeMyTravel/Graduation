@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar" />
+
+    <LinearLayout
+        android:id="@+id/photo"
+        android:paddingLeft="50dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingRight="50dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/skyblue"
+        android:layout_below="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.lion.graduation2.util.circularImage.CircularImage
+            android:id="@+id/user_photo"
+            android:layout_gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:text="厉圣杰"
+            android:textSize="20sp"
+            android:background="@color/skyblue"
+            android:layout_below="@+id/user_photo"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <com.lion.graduation2.ui.view.SimpleTextItem
+        android:id="@+id/user_describe"
+        android:layout_below="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.lion.graduation2.ui.view.SimpleTextItem
+        android:id="@+id/user_phone"
+        android:layout_below="@+id/user_describe"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.lion.graduation2.ui.view.SimpleTextItem
+        android:id="@+id/user_email"
+        android:layout_below="@+id/user_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.lion.graduation2.ui.view.SimpleTextItem
+        android:id="@+id/user_department"
+        android:layout_below="@+id/user_email"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.lion.graduation2.ui.view.SimpleTextItem
+        android:id="@+id/user_position"
+        android:layout_below="@+id/user_department"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.lion.graduation2.ui.view.SimpleTextItem
+        android:id="@+id/user_joinTime"
+        android:layout_below="@+id/user_position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

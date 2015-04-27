@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!-- 将默认主题改为NoActionBar -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+</resources>

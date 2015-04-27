@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_login_out"
+        android:title="@string/login_out"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/rich_scan"
+        android:title="@string/rich_sacn"
+        android:orderInCategory="80"
+        android:icon="@drawable/nav"
+        app:showAsAction="ifRoom" />
+
+</menu>

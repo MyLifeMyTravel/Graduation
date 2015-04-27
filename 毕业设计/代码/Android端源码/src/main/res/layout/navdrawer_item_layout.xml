@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 抽屉菜单中突发情况、技术支持、设置、帮助等选项的布局 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="20dp"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp"
+    android:paddingRight="15dp"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/item_color_bg">
+
+    <ImageView
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp" />
+
+    <TextView
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/text"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>
