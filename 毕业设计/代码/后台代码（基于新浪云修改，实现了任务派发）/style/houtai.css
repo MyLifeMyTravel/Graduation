@@ -1,0 +1,70 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{ margin:0px; padding:0px; font-size:12px; background:#13a1e6;}
+*{ margin:0px; padding:0px;}
+a{ text-decoration:none; color:#000;}
+a img { border:none;}
+
+/* 后台首页代码 */
+.I_top{ width:100%; height:85px; background:url(../images/H_topbg.jpg) repeat-x;}
+.top_content{ width:1000px; margin:0 auto; padding-top:10px;}
+.top_a1{ width:65px; height:60px; margin-left:65px;}
+.top_a2,.top_a3{ width:65px; height:60px; margin-left:10px;}
+.I_main{ width:1000px; height:750px; margin:0 auto; padding-top:10px;}
+.left{ float:left; width:190px; height:705px; background:#1688c7; border:1px solid #74d4fb;}
+.left_01{ width:180px; margin:4px 5px 10px 5px; background:#5faed9;}
+.I_ul{ margin-top:15px; margin-left:30px; padding-bottom:10px; line-height:20px; display:none;}
+
+iframe{ width:780px; height:705px; float:left; margin-left:10px;  }
+
+.footer{ width:1000px; clear:both; color:#fff; padding:20px 0px; text-align:center;}
+
+/* 首页代码 */
+.right{ width:780px; height:705px; float:left; background:#fff; border:1px solid #1688c7;}
+.right_01{ width:780px; height:35px; background:url(../images/I_bg.png) repeat-x;}
+.right_01 p{ padding:10px 0px 10px 20px; color:#fff;}
+.right_02 p{ padding:20px 0px 10px 20px;}
+
+/* 添加设备代码 */
+.right_shebeiadd_1{ width:100%; height:25px; background:#f4f4f4; padding-top:10px; padding-left:20px;}
+.right_shebeiadd_1 img{ display:block; float:left; padding-right:5px; }
+.right_shebeiadd_1 a{ display:block; float:left; margin-top:2px; padding-right:10px; }
+.shebeiadd_form{ padding-top:20px; padding-left:20px;}
+.shebeiadd_form label{ width:60px;}
+
+/* 管理设备代码 */
+.shebeimanage_table table{ width:100%; text-align:center; padding-top:20px; padding-left:20px; border-collapse:collapse;}
+table,th,td{border:1px solid #ccc;}
+th,td{ height:30px;}
+th{ background:#cdedfa;}
+
+/* 添加巡检计划代码 */
+
+
+
+/* 管理巡检计划代码 */
+.xunjianjihuamanage_table table{ width:100%; text-align:center; padding-top:20px; padding-left:20px; border-collapse:collapse;}
+
+
+/* 添加巡检结果代码 */
+.xunjianjieguoadd_form{padding-top:20px; padding-left:20px;}
+.xunjianjieguoadd_form label{ width:85px; float:left;}
+
+
+/* 管理巡检结果代码 */
+
+
+/* 添加用户代码 */
+.useradd_form{padding-top:20px; padding-left:20px;}
+.useradd_form label{ width:60px; float:left; text-align:right;}
+
+/* 添加变电所代码 */
+.biandiansuoadd_form{padding-top:20px; padding-left:20px;}
+.biandiansuoadd_form label{ width:80px; float:left; text-align:right;}
+
+
+/* 添加线路代码 */
+.xianluadd_form{padding-top:20px; padding-left:20px;}
+.xianluadd_form label{ width:80px; float:left; text-align:right;}
+.xianluadd_form select{ width:80px;}

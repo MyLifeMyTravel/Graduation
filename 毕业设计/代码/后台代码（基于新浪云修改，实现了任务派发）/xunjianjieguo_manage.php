@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理巡检结果</title>
+<link type="text/css" rel="stylesheet" href="style/houtai.css" />
+<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+</head>
+
+<body>
+ 				<div class="right">
+                    <div class="right_01">
+                        <p>当前操作：管理巡检结果</p>
+                    </div>
+                    <div class="right_shebeiadd_1">
+                        <span class="box"><img src="images/add.png" /></span>
+                        <a href="xunjianjihu_add.php" target="main">添加巡检计划</a>
+                        <span class="box"><img src="images/shuaxin.png" /></span>
+                        <a id="PageRefresh" style="cursor:pointer;">刷新</a>
+                    </div>
+                    <div class="xunjianjihuamanage_table">
+                    	<br /><br /><br /><br /><br />
+                    	<p align="center">本功能正在建设中.....</p>
+						<!--<table>
+                        <tr>
+                        <th>巡检设备编号</th><th>巡检位置</th><th>性能参数</th><th><a href="#">查看</a></th><th><a href="#">编辑</a></th><th><a href="#">删除</a></th>
+                        </tr>
+                        <tr>
+                        <td>34536576586</td><td>SXXXXXXXXX</td><td>性能参数</td><td><a href="#">查看</a></td><td><a href="#">编辑</a></td><td><a href="#">删除</a></td>
+                        </tr>
+                        <tr>
+                        <td>34536576586</td><td>SXXXXXXXXX</td><td>性能参数</td><td><a href="#">查看</a></td><td><a href="#">编辑</a></td><td><a href="#">删除</a></td>
+                        </tr>
+                        <tr>
+                        <td>34536576586</td><td>SXXXXXXXXX</td><td>性能参数</td><td><a href="#">查看</a></td><td><a href="#">编辑</a></td><td><a href="#">删除</a></td>
+                        </tr>
+                        </table> -->
+                    </div>
+                </div><!--right结束-->
+                
+    
+<!--刷新页面js代码-->
+<script type="text/javascript"> 
+ $('#PageRefresh').click(function() { 
+           window.location.reload();
+ }); 
+</script>                
+</body>
+</html>
