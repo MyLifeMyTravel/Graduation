@@ -25,7 +25,6 @@
 
             <ImageView
                 android:id="@+id/clockBtn"
-                android:src="@drawable/icon_clock"
                 android:layout_width="40dp"
                 android:layout_height="40dp"/>
 

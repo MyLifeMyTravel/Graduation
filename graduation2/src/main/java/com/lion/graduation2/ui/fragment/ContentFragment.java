@@ -31,6 +31,7 @@ import com.lion.graduation2.bean.model.WeatherModel;
 import com.lion.graduation2.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation2.ui.adapter.TaskListRecyclerViewAdapter;
 import com.lion.graduation2.ui.fragment.base.BaseTourFragment;
+import com.lion.graduation2.util.BitmapUtils;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.TimeUtils;
@@ -197,7 +198,8 @@ public class ContentFragment extends BaseTourFragment {
         public void onWeatherLiveSearched(AMapLocalWeatherLive aMapLocalWeatherLive) {
             if (aMapLocalWeatherLive != null && aMapLocalWeatherLive.getAMapException().getErrorCode() == 0) {
                 city.setText(aMapLocalWeatherLive.getCity());
-                weather_icon.setImageResource(setWeatherIcon(aMapLocalWeatherLive.getWeather()));
+                weather_icon.setImageBitmap(BitmapUtils.readBitMap(getActivity(), setWeatherIcon(aMapLocalWeatherLive.getWeather())));
+                //weather_icon.setImageResource(setWeatherIcon(aMapLocalWeatherLive.getWeather()));
                 time.setText(TimeUtils.getTime());
                 wind_dir.setText("风向:" + aMapLocalWeatherLive.getWindDir());
                 wind_power.setText("风力:" + aMapLocalWeatherLive.getWindPower());

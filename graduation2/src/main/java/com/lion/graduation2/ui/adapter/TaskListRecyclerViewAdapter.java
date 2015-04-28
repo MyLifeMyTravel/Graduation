@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.lion.graduation2.R;
 import com.lion.graduation2.bean.json.TaskBean;
+import com.lion.graduation2.util.BitmapUtils;
 import com.lion.graduation2.util.Constant;
 import com.lion.graduation2.util.TimeUtils;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
 
     private static final int TYPE_WEATHER = 0;
+    private Context context;
     private List<TaskBean> items = null;
 
     public TaskListRecyclerViewAdapter(List<TaskBean> items) {
@@ -36,6 +38,7 @@ public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
     public class TaskViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout clock;
+        private ImageView clockBtn;
         private TextView task_type, task_name, task_time;
 
         public TaskViewHolder(final View itemView) {
@@ -44,7 +47,7 @@ public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
             this.task_name = (TextView) itemView.findViewById(R.id.task_name);
             this.task_time = (TextView) itemView.findViewById(R.id.task_time);
             this.clock = (LinearLayout) itemView.findViewById(R.id.clock);
-
+            this.clockBtn = (ImageView) this.clock.findViewById(R.id.clockBtn);
             this.clock.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -66,6 +69,7 @@ public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.task_item_layout, viewGroup, false);
+        context = viewGroup.getContext();
         return new TaskViewHolder(v);
     }
 
@@ -79,6 +83,7 @@ public class TaskListRecyclerViewAdapter extends BaseRecyclerViewAdapter {
             holder.task_time.setTextColor(Color.RED);
         }
         holder.task_time.setText(items.get(i).getDate() + " " + items.get(i).getTime());
+        holder.clockBtn.setImageBitmap(BitmapUtils.readBitMap(context, R.drawable.icon_clock));
     }
 
     @Override

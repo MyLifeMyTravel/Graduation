@@ -41,7 +41,7 @@ public class PlaceRecyclerViewAdapter extends BaseRecyclerViewAdapter {
             this.btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    getOnItemClickListener().onItemClick(itemView, getPosition());
                 }
             });
             this.itemView.setOnClickListener(new View.OnClickListener() {

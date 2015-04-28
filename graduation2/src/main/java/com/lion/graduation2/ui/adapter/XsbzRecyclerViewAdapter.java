@@ -48,7 +48,7 @@ public class XsbzRecyclerViewAdapter extends BaseRecyclerViewAdapter {
 
                         public void onClick(DialogInterface dialog, int which) {
                             String note = inputServer.getText().toString();
-                            noteText.setText(note);
+                            noteText.setText("备注:" + note);
                             xsbzBeans.get(getPosition()).setNote(note);
                         }
                     });
