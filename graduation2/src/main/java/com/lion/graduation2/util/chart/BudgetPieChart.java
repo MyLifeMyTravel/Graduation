@@ -33,7 +33,7 @@ public class BudgetPieChart {
         renderer.setApplyBackgroundColor(true);
         renderer.setLabelsTextSize(20);
         renderer.setChartTitle(title);
-        renderer.setChartTitleTextSize(30);
+        renderer.setChartTitleTextSize(80);
         renderer.setLegendTextSize(30);
         renderer.setLegendHeight(100);
         //renderer.setZoomButtonsVisible(true);
