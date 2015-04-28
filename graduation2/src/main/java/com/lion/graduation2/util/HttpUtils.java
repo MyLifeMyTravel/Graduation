@@ -40,7 +40,7 @@ public class HttpUtils {
         String POST_HISTORY_URL = DOMAIN_URL + "post/postHistory.php";
         String GET_DEVICE_HISTORY_URL = DOMAIN_URL + "post/getHistory.php";
         String POST_UPDATE_DEVICEID_URL = DOMAIN_URL + "post/updateDeviceID.php";
-        String POST_UPDATE_TASK_STATUS_URL = DOMAIN_URL + "post/updateTaskStatus.php";
+        String POST_UPDATE_TASK_FLAG_URL = DOMAIN_URL + "post/updateTaskStatus.php";
         String GET_COUNT_URL = DOMAIN_URL + "getTaskCount.php?account=%s";
     }
 
