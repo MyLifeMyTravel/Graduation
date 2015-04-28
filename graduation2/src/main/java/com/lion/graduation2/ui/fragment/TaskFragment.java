@@ -1,5 +1,6 @@
 package com.lion.graduation2.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -38,6 +39,9 @@ import com.lion.graduation2.util.HttpUtils;
 import com.lion.graduation2.util.amap.MyGeocodeSearch;
 
 import net.tsz.afinal.FinalDb;
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -121,7 +125,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         taskSign = (CardView) view.findViewById(R.id.task_sign);
         taskSign.setCardBackgroundColor(getResources().getColor(R.color.lightskyblue));
         taskSignBtn = (Button) taskSign.findViewById(R.id.btn);
-        if(isSign) {
+        if (isSign) {
             taskSign.setVisibility(View.GONE);
         }
 
@@ -196,8 +200,7 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
                     }
                 }
                 if (isFinish) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                    Toast.makeText(getActivity(), "正在提交", Toast.LENGTH_LONG).show();
+                    updateFlag();
                 } else {
                     Toast.makeText(getActivity(), "您尚有未完成的巡检场地，请继续巡检！", Toast.LENGTH_SHORT).show();
                 }
@@ -344,5 +347,34 @@ public class TaskFragment extends BaseTourFragment implements AMapLocationListen
         }
         Log.d(Constant.TAG, list.hashCode() + "");
         return list;
+    }
+
+    ProgressDialog dialog = null;
+
+    private void updateFlag() {
+        FinalHttp fh = new FinalHttp();
+        AjaxParams params = new AjaxParams();
+        params.put("task_id", tasks.get(tPostion).getId() + "");
+        fh.post(HttpUtils.HttpUrl.POST_UPDATE_TASK_FLAG_URL, params, new AjaxCallBack<Object>() {
+            @Override
+            public void onSuccess(Object o) {
+                super.onSuccess(o);
+                dialog.dismiss();
+                String result = (String) o;
+                Log.d(Constant.TAG, result);
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+                dialog = ProgressDialog.show(getActivity(), null, "正在提交...");
+            }
+
+            @Override
+            public void onFailure(Throwable t, String strMsg) {
+                super.onFailure(t, strMsg);
+            }
+        });
     }
 }

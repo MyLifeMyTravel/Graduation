@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,12 @@ import com.lion.graduation2.ui.DividerItemDecoration;
 import com.lion.graduation2.ui.adapter.BaseRecyclerViewAdapter;
 import com.lion.graduation2.ui.adapter.DeviceRecyclerViewAdapter;
 import com.lion.graduation2.ui.fragment.base.BaseTourFragment;
+import com.lion.graduation2.util.Constant;
+import com.lion.graduation2.util.HttpUtils;
+
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 
 import java.util.List;
 
@@ -87,4 +94,5 @@ public class DeviceFragment extends BaseTourFragment {
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }
+
 }
